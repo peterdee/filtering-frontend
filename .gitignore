@@ -1,0 +1,13 @@
+# Directories
+.cache/
+.idea/
+.nitro/
+.nuxt/
+.output/
+dist/
+node_modules/
+
+# Files
+.DS_Store
+.env
+*.log*
