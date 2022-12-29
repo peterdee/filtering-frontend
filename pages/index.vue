@@ -13,12 +13,14 @@ const AVAILABLE_FILTERS = [
 ]
 
 interface ComponentState {
+  loading: boolean;
   selectedFilter: string;
   selectedImage: File | null;
   selectedImageLink: string;
 }
 
 const state = reactive<ComponentState>({
+  loading: false,
   selectedFilter: AVAILABLE_FILTERS[0].value,
   selectedImage: null,
   selectedImageLink: ''
@@ -48,6 +50,7 @@ const handleSelect = (event: Event): void => {
 }
 
 const handleSubmit = (): void => {
+  state.loading = true
   console.log(state.selectedImage, state.selectedFilter)
 }
 </script>
@@ -77,6 +80,7 @@ const handleSubmit = (): void => {
         <select @change="handleSelect">
           <option
             v-for="option in AVAILABLE_FILTERS"
+            :key="option.value"
             :value="option.value"
           >
             {{ option.name }}
@@ -98,7 +102,7 @@ const handleSubmit = (): void => {
     </main>
     <footer class="f ai-center j-center ns">
       <span>
-        2022, Peter Dyumin
+        2022 - 2023, Peter Dyumin
       </span>
     </footer>
   </div>
@@ -111,8 +115,8 @@ footer {
   width: 100%;
 }
 .image {
-  height: 400px;
-  width: 400px;
+  max-height: 400px;
+  max-width: 400px;
 }
 .wrap {
   min-height: 100vh;
