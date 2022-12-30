@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import axios from 'axios'
 import 'common-styles/styles.css'
 
 const AVAILABLE_FILTERS = [
@@ -43,15 +44,37 @@ const handleInput = (event: Event): null | void => {
   }
   state.selectedImage = files[0]
   state.selectedImageLink = URL.createObjectURL(files[0])
+
+  // TODO: store original file name
 }
 
 const handleSelect = (event: Event): void => {
   state.selectedFilter = (event.target as HTMLSelectElement).value
 }
 
-const handleSubmit = (): void => {
+const handleSubmit = async (): Promise<null | void> => {
+  const { selectedFilter, selectedImage } = state
+  if (!(selectedFilter && selectedImage)) {
+    // TODO: error message
+    return null
+  }
+
   state.loading = true
-  console.log(state.selectedImage, state.selectedFilter)
+
+  const formData = new FormData()
+  formData.append('filter', selectedFilter)
+  formData.append('image', selectedImage, 'image')
+
+  try {
+    const response = await axios({
+      data: formData,
+      method: 'POST',
+      url: useRuntimeConfig().public.BACKEND_URL
+    })
+    console.log(response)
+  } catch (error) {
+    console.log(error)
+  }
 }
 </script>
 
@@ -102,7 +125,7 @@ const handleSubmit = (): void => {
     </main>
     <footer class="f ai-center j-center ns">
       <span>
-        2022 - 2023, Peter Dyumin
+        2022-2023, Peter Dyumin
       </span>
     </footer>
   </div>
