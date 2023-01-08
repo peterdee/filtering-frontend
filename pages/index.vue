@@ -4,8 +4,8 @@ import 'common-styles/styles.css'
 
 const AVAILABLE_FILTERS = [
   {
-    name: 'Grayscale',
-    value: 'grayscale'
+    name: 'Emboss filter',
+    value: 'emboss'
   },
   {
     name: 'Sobel filter',
@@ -63,13 +63,13 @@ const handleSubmit = async (): Promise<null | void> => {
 
   const formData = new FormData()
   formData.append('filter', selectedFilter)
-  formData.append('image', selectedImage, 'image')
+  formData.append('image', selectedImage, selectedImage.name)
 
   try {
     const response = await axios({
       data: formData,
       method: 'POST',
-      url: useRuntimeConfig().public.BACKEND_URL
+      url: `${useRuntimeConfig().public.BACKEND_URL}/api/processing`
     })
     console.log(response)
   } catch (error) {

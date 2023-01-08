@@ -1,31 +1,37 @@
-# Nuxt 3 Minimal Starter
+## filtering-frontend
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This is a frontend application for [Brille module](https://github.com/julyskies/brille) demo
 
-## Setup
+Backend application code is available at https://github.com/peterdee/filtering-backend
 
-Make sure to install the dependencies:
+DEV: http://localhost:3000
 
-```bash
-# yarn
-yarn install
+PRODUCTION: *TBD*
 
-# npm
-npm install
+### Deploy
 
-# pnpm
-pnpm install --shamefully-hoist
+```shell script
+git clone https://github.com/peterdee/filtering-frontend
+cd ./filtering-frontend
+nvm use 18
+npm ci
 ```
 
-## Development Server
+### Environment variables
 
-Start the development server on http://localhost:3000
+The `.env` file is required, see [.env.example](.env.example) for details
 
-```bash
+### Launch
+
+##### Development
+
+```shell script
 npm run dev
 ```
 
-## Production
+Development server will be available at http://localhost:3000
+
+##### Production
 
 Build the application for production:
 
@@ -39,4 +45,6 @@ Locally preview production build:
 npm run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### License
+
+[MIT](./LICENSE.md)

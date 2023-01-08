@@ -1,6 +1,6 @@
 {
   "name": "filtering-frontend",
-  "description": "Image filtering",
+  "description": "Brille module demo",
   "private": true,
   "scripts": {
     "build": "nuxt build",
