@@ -2,29 +2,26 @@
 import axios from 'axios'
 import 'common-styles/styles.css'
 
-const AVAILABLE_FILTERS = [
-  {
-    name: 'Emboss filter',
-    value: 'emboss'
-  },
-  {
-    name: 'Sobel filter',
-    value: 'sobel'
-  }
-]
+import filters, { Filter } from '../utilities/filter-list'
 
 interface ComponentState {
+  grayscaleType: string;
   loading: boolean;
-  selectedFilter: string;
+  selectedFilter: Filter;
   selectedImage: File | null;
   selectedImageLink: string;
+  selectedImageName: string;
+  thresholdValue: number;
 }
 
 const state = reactive<ComponentState>({
+  grayscaleType: '',
   loading: false,
-  selectedFilter: AVAILABLE_FILTERS[0].value,
+  selectedFilter: filters[0],
   selectedImage: null,
-  selectedImageLink: ''
+  selectedImageLink: '',
+  selectedImageName: '',
+  thresholdValue: 0
 })
 
 onBeforeUnmount((): void => {
@@ -37,23 +34,31 @@ const handleClear = (): void => {
   state.selectedImageLink = ''
 }
 
-const handleInput = (event: Event): null | void => {
+const handleFileInput = (event: Event): null | void => {
   const { files } = event.target as HTMLInputElement
   if (!(files && files.length > 0)) {
     return null
   }
   state.selectedImage = files[0]
   state.selectedImageLink = URL.createObjectURL(files[0])
-
-  // TODO: store original file name
+  state.selectedImageName = files[0].name
 }
 
-const handleSelect = (event: Event): void => {
-  state.selectedFilter = (event.target as HTMLSelectElement).value
+const handleSelectFilter = (event: Event): void => {
+  const { value } = event.target as HTMLSelectElement
+  state.selectedFilter = filters.filter(
+    (filter: Filter): boolean => filter.value === value
+  )[0]
+  state.thresholdValue = state.selectedFilter.thresholdDefault
 }
 
 const handleSubmit = async (): Promise<null | void> => {
-  const { selectedFilter, selectedImage } = state
+  const {
+    grayscaleType,
+    selectedFilter,
+    selectedImage,
+    thresholdValue
+  } = state
   if (!(selectedFilter && selectedImage)) {
     // TODO: error message
     return null
@@ -62,17 +67,29 @@ const handleSubmit = async (): Promise<null | void> => {
   state.loading = true
 
   const formData = new FormData()
-  formData.append('filter', selectedFilter)
+  formData.append('filter', selectedFilter.value)
   formData.append('image', selectedImage, selectedImage.name)
+
+  if (selectedFilter.value === 'grayscale') {
+    formData.append('grayscaleType', grayscaleType)
+  }
+  if (selectedFilter.withThreshold) {
+    formData.append('threshold', `${thresholdValue}`)
+  }
 
   try {
     const response = await axios({
       data: formData,
       method: 'POST',
+      responseType: 'blob',
       url: `${useRuntimeConfig().public.BACKEND_URL}/api/processing`
     })
-    console.log(response)
+
+    state.selectedImageLink = URL.createObjectURL(response.data)
+
+    state.loading = false
   } catch (error) {
+    state.loading = false
     console.log(error)
   }
 }
@@ -81,16 +98,19 @@ const handleSubmit = async (): Promise<null | void> => {
 <template>
   <div class="f d-col j-space-between wrap">
     <main class="f d-col">
+      <div v-if="state.loading">
+        Loading...
+      </div>
       <div v-if="!state.selectedImage">
         <input
           accept="image/png, image/jpg"
           name="fileSelection"
           type="file"
-          @input="handleInput"
+          @input="handleFileInput"
         >
       </div>
       <div
-        v-if="state.selectedImage"
+        v-if="state.selectedImage && !state.loading"
         class="f d-col"
       >
         <div class="image">
@@ -100,9 +120,9 @@ const handleSubmit = async (): Promise<null | void> => {
             :src="state.selectedImageLink"
           >
         </div>
-        <select @change="handleSelect">
+        <select @change="handleSelectFilter">
           <option
-            v-for="option in AVAILABLE_FILTERS"
+            v-for="option in filters"
             :key="option.value"
             :value="option.value"
           >
@@ -123,20 +143,11 @@ const handleSubmit = async (): Promise<null | void> => {
         </button>
       </div>
     </main>
-    <footer class="f ai-center j-center ns">
-      <span>
-        2022-2023, Peter Dyumin
-      </span>
-    </footer>
+    <FooterComponent />
   </div>
 </template>
 
 <style scoped>
-footer {
-  font-size: calc(var(--spacer) - var(--spacer-quarter));
-  height: calc(var(--spacer) * 2);
-  width: 100%;
-}
 .image {
   max-height: 400px;
   max-width: 400px;
