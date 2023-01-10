@@ -78,6 +78,11 @@ const handleSelectFilter = (event: Event): void => {
   state.thresholdValue = state.selectedFilter.thresholdDefault
 }
 
+const handleThresholdInput = (event: Event): null | void => {
+  const { value } = event.target as HTMLInputElement
+  state.thresholdValue = Number(value)
+}
+
 const handleSubmit = async (): Promise<null | void> => {
   const {
     grayscaleType,
@@ -130,8 +135,8 @@ const handleSubmit = async (): Promise<null | void> => {
 </script>
 
 <template>
-  <div class="f d-col j-space-between wrap">
-    <main class="f d-col">
+  <div class="f d-col wrap">
+    <main class="f d-col ai-center j-center">
       <div v-if="state.loading">
         Loading...
       </div>
@@ -181,14 +186,26 @@ const handleSubmit = async (): Promise<null | void> => {
               :threshold-value="state.thresholdValue"
             />
           </div>
+          <div v-if="state.selectedFilter.controlType === 'input'">
+            <input
+              class="mt-1"
+              placeholder="Blur amount"
+              type="number"
+              :min="state.selectedFilter.thresholdMin"
+              :value="state.thresholdValue"
+              @input="handleThresholdInput"
+            >
+          </div>
         </div>
         <button
+          class="mt-1"
           type="button"
           @click="handleSubmit"
         >
           Apply filter
         </button>
         <button
+          class="mt-1"
           type="button"
           @click="handleClear"
         >
@@ -201,9 +218,12 @@ const handleSubmit = async (): Promise<null | void> => {
 </template>
 
 <style scoped>
+main {
+  min-height: calc(100vh - var(--spacer) * 3);
+}
 .image {
-  max-height: 400px;
-  max-width: 400px;
+  max-height: 70vh;
+  max-width: 90vw;
 }
 .wrap {
   min-height: 100vh;
