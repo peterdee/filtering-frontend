@@ -21,14 +21,14 @@ interface ComponentState {
 }
 
 const state = reactive<ComponentState>({
-  grayscaleType: '',
+  grayscaleType: 'average',
   loading: false,
   selectedFilter: filters[0],
   selectedImage: null,
   selectedImageLink: '',
   selectedImageName: '',
   storedImages: [],
-  thresholdValue: 0
+  thresholdValue: filters[0].thresholdDefault
 })
 
 onBeforeUnmount((): void => {
@@ -50,12 +50,23 @@ const handleFileInput = (event: Event): null | void => {
   if (!(files && files.length > 0)) {
     return null
   }
-  state.selectedImage = files[0]
+  const file = files[0]
+  if (file.size > useRuntimeConfig().public.MAX_FILE_SIZE) {
+    // TODO: maximum file size error
+    return null
+  }
+
+  state.selectedImage = file
   state.selectedImageLink = URL.createObjectURL(files[0])
-  state.selectedImageName = files[0].name
+  state.selectedImageName = file.name
+
+  if (!state.selectedFilter) {
+    state.selectedFilter = filters[0]
+    state.thresholdValue = filters[0].thresholdDefault
+  }
 
   state.storedImages.push({
-    file: files[0],
+    file,
     fileLink: state.selectedImageLink
   })
 }
@@ -159,7 +170,10 @@ const handleSubmit = async (): Promise<null | void> => {
             :src="state.selectedImageLink"
           >
         </div>
-        <select @change="handleSelectFilter">
+        <select
+          :value="state.selectedFilter.value"
+          @change="handleSelectFilter"
+        >
           <option
             v-for="option in filters"
             :key="option.value"
@@ -169,7 +183,10 @@ const handleSubmit = async (): Promise<null | void> => {
           </option>
         </select>
         <div v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'">
-          <select @change="handleGrayscaleSelection">
+          <select
+            :value="state.grayscaleType"
+            @change="handleGrayscaleSelection"
+          >
             <option value="average">
               Average
             </option>
