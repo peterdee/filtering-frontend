@@ -7,6 +7,7 @@ import filters, { Filter } from '../utilities/filter-list'
 interface StoredImage {
   file: File;
   fileLink: string;
+  id: number;
 }
 
 interface ComponentState {
@@ -14,6 +15,7 @@ interface ComponentState {
   loading: boolean;
   selectedFilter: Filter;
   selectedImage: File | null;
+  selectedImageId: number | null;
   selectedImageLink: string;
   selectedImageName: string;
   storedImages: StoredImage[];
@@ -25,6 +27,7 @@ const state = reactive<ComponentState>({
   loading: false,
   selectedFilter: filters[0],
   selectedImage: null,
+  selectedImageId: null,
   selectedImageLink: '',
   selectedImageName: '',
   storedImages: [],
@@ -56,7 +59,9 @@ const handleFileInput = (event: Event): null | void => {
     return null
   }
 
+  const id = Date.now()
   state.selectedImage = file
+  state.selectedImageId = id
   state.selectedImageLink = URL.createObjectURL(files[0])
   state.selectedImageName = file.name
 
@@ -67,13 +72,22 @@ const handleFileInput = (event: Event): null | void => {
 
   state.storedImages.push({
     file,
-    fileLink: state.selectedImageLink
+    fileLink: state.selectedImageLink,
+    id
   })
 }
 
 const handleGrayscaleSelection = (event: Event): void => {
   const { value } = event.target as HTMLSelectElement
   state.grayscaleType = value
+}
+
+const handlePreviewClick = (id: number): void => {
+  const [newSelectedImage] = state.storedImages.filter(
+    (image: StoredImage): boolean => image.id === id
+  )
+  state.selectedImage = newSelectedImage.file
+  state.selectedImageLink = newSelectedImage.fileLink
 }
 
 const handleRangeInput = (event: Event): void => {
@@ -134,7 +148,8 @@ const handleSubmit = async (): Promise<null | void> => {
     state.selectedImageLink = processedImageLink
     state.storedImages.push({
       file: response.data,
-      fileLink: processedImageLink
+      fileLink: processedImageLink,
+      id: Date.now()
     })
 
     state.loading = false
@@ -169,6 +184,24 @@ const handleSubmit = async (): Promise<null | void> => {
             class="image"
             :src="state.selectedImageLink"
           >
+        </div>
+        <div class="f">
+          <div
+            v-for="image in state.storedImages"
+            :key="image.id"
+          >
+            <button
+              class="image-preview-button"
+              type="button"
+              @click="handlePreviewClick(image.id)"
+            >
+              <img
+                class="image-preview"
+                alt="Image preview"
+                :src="image.fileLink"
+              >
+            </button>
+          </div>
         </div>
         <select
           :value="state.selectedFilter.value"
@@ -239,8 +272,16 @@ main {
   min-height: calc(100vh - var(--spacer) * 3);
 }
 .image {
-  max-height: 70vh;
+  max-height: 50vh;
   max-width: 90vw;
+}
+.image-preview, .image-preview-button {
+  max-height: 4vh;
+  max-width: 8vw;
+}
+.image-preview-button {
+  background-color: transparent;
+  padding: 0;
 }
 .wrap {
   min-height: 100vh;
