@@ -34,6 +34,10 @@ const state = reactive<ComponentState>({
   thresholdValue: filters[0].thresholdDefault
 })
 
+definePageMeta({
+  title: 'BRILLE image processing demo'
+})
+
 onBeforeUnmount((): void => {
   URL.revokeObjectURL(state.selectedImageLink)
 
@@ -161,7 +165,8 @@ const handleSubmit = async (): Promise<null | void> => {
 </script>
 
 <template>
-  <div class="f d-col wrap">
+  <div class="f d-col j-space-between wrap">
+    <HeaderComponent />
     <main class="f d-col ai-center j-center">
       <div v-if="state.loading">
         Loading...
@@ -268,9 +273,6 @@ const handleSubmit = async (): Promise<null | void> => {
 </template>
 
 <style scoped>
-main {
-  min-height: calc(100vh - var(--spacer) * 3);
-}
 .image {
   max-height: 50vh;
   max-width: 90vw;
