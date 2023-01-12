@@ -34,10 +34,6 @@ const state = reactive<ComponentState>({
   thresholdValue: filters[0].thresholdDefault
 })
 
-definePageMeta({
-  title: 'BRILLE image processing demo'
-})
-
 onBeforeUnmount((): void => {
   URL.revokeObjectURL(state.selectedImageLink)
 

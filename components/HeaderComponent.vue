@@ -1,10 +1,19 @@
 <script setup lang="ts">
 interface ComponentState {
+  favicon: string;
   showModal: boolean;
 }
 
 const state = reactive<ComponentState>({
+  favicon: 'favicon-dark.png',
   showModal: false
+})
+
+onBeforeMount((): void => {
+  if (window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    state.favicon = 'favicon-light.png'
+  }
 })
 
 const handleLogoClick = (): void => {
@@ -17,19 +26,30 @@ const toggleModal = (): void => {
 </script>
 
 <template>
+  <Head>
+    <Link
+      rel="icon"
+      type="image/x-icon"
+      :href="state.favicon"
+    />
+    <Title>
+      BRILLE image processing demo
+    </Title>
+  </Head>
   <header class="f ai-center j-space-between ns">
     <AboutModal
       v-if="state.showModal"
       @toggle-modal="toggleModal"
     />
     <button
-      class="logo"
+      class="logo-button"
       type="button"
       @click="handleLogoClick"
     >
       <img
         alt="dyum.in"
-        src=""
+        class="logo"
+        src="~/assets/logo.png"
       >
     </button>
     <button
@@ -47,30 +67,43 @@ header {
   background-color: transparent;
   flex-wrap: wrap;
   font-size: calc(var(--spacer) - var(--spacer-quarter));
-  height: calc(var(--spacer) * 2);
+  height: calc(var(--spacer) * 3);
   margin: 0 auto;
   max-width: 90vw;
-  padding: var(--spacer);
   width: 100%;
 }
 .about {
-  height: calc(var(--spacer) + var(--spacer-half));
+  background-color: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  height: calc(var(--spacer) + var(--spacer-half) + var(--spacer-quarter));
+  transition: background-color var(--transition) ease-out,
+    border var(--transition) ease-out,
+    color var(--transition) ease-out;
+}
+.about:hover {
+  background-color: var(--accent-light);
+  border: 1px solid var(--accent-light);
+  color: var(--text-inverted);
+  transition: background-color var(--transition) ease-in,
+    border var(--transition) ease-in,
+    color var(--transition) ease-in;
 }
 .logo, .logo-button {
-  height: calc(var(--spacer) + var(--spacer-half));
-  width: calc(var(--spacer) + var(--spacer-half));
+  height: calc(var(--spacer) * 2);
+  width: calc(var(--spacer) * 2);
 }
 .logo-button {
   background-color: transparent;
+  border-radius: 50%;
   padding: 0;
+  transition: background-color var(--transition) ease-out,
+    box-shadow var(--transition) ease-out;
 }
-.modal-wrap {
-  background-color: var(--background);
-  display: flex;
-  height: 100vh;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100vw;
+.logo-button:hover {
+  background-color: var(--accent-light);
+  box-shadow: 0 0 var(--spacer-half) var(--spacer-quarter) var(--accent-light);
+  transition: background-color var(--transition) ease-in,
+    box-shadow var(--transition) ease-in;
 }
 </style>
