@@ -58,6 +58,33 @@ const handleClear = (): void => {
   state.storedImages = []
 }
 
+const handleDeleteImage = (): void => {
+  const { selectedImageId, storedImages } = state
+  const storedImagesLength = storedImages.length
+  if (storedImagesLength === 1) {
+    return handleClear()
+  }
+
+  let selectedImageIndex: number
+  for (let i = 0; i < storedImagesLength; i += 1) {
+    if (storedImages[i].id === selectedImageId) {
+      selectedImageIndex = i
+      break
+    }
+  }
+
+  const nextImageIndex = selectedImageIndex < storedImagesLength - 1
+    ? selectedImageIndex + 1
+    : selectedImageIndex - 1
+
+  state.selectedImage = state.storedImages[nextImageIndex].file
+  state.selectedImageId = state.storedImages[nextImageIndex].id
+  state.selectedImageLink = state.storedImages[nextImageIndex].fileLink
+  state.storedImages = storedImages.filter(
+    (image: StoredImage): boolean => image.id !== selectedImageId
+  )
+}
+
 const handleDownloadImage = (): void => {
   const link = document.createElement('a')
   link.download = state.selectedImageName
@@ -106,6 +133,7 @@ const handlePreviewClick = (id: number): void => {
     (image: StoredImage): boolean => image.id === id
   )
   state.selectedImage = newSelectedImage.file
+  state.selectedImageId = newSelectedImage.id
   state.selectedImageLink = newSelectedImage.fileLink
 }
 
@@ -167,12 +195,14 @@ const handleSubmit = async (): Promise<null | void> => {
 
     const processedImageLink = URL.createObjectURL(response.data)
 
+    const id = Date.now()
     state.selectedImage = response.data
+    state.selectedImageId = id
     state.selectedImageLink = processedImageLink
     state.storedImages.push({
       file: response.data,
       fileLink: processedImageLink,
-      id: Date.now()
+      id
     })
 
     state.loading = false
@@ -236,6 +266,18 @@ const handleSubmit = async (): Promise<null | void> => {
         <div class="f j-end mb-quarter mt-quarter">
           <button
             class="f ai-center preview-modal-button"
+            title="Delete selected image"
+            type="button"
+            @click.stop="handleDeleteImage"
+          >
+            <CloseIcon
+              :color="'black'"
+              :size="24"
+            />
+          </button>
+          <button
+            class="f ai-center ml-1 preview-modal-button"
+            title="Preview selected image"
             type="button"
             @click.stop="togglePreviewModal"
           >
@@ -246,6 +288,7 @@ const handleSubmit = async (): Promise<null | void> => {
           </button>
           <button
             class="f ai-center ml-1 preview-modal-button"
+            title="Download selected image"
             type="button"
             @click="handleDownloadImage"
           >
