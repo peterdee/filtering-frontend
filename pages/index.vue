@@ -18,6 +18,7 @@ interface ComponentState {
   selectedImageId: number | null;
   selectedImageLink: string;
   selectedImageName: string;
+  showPreviewModal: boolean;
   storedImages: StoredImage[];
   thresholdValue: number;
 }
@@ -30,6 +31,7 @@ const state = reactive<ComponentState>({
   selectedImageId: null,
   selectedImageLink: '',
   selectedImageName: '',
+  showPreviewModal: false,
   storedImages: [],
   thresholdValue: filters[0].thresholdDefault
 })
@@ -46,6 +48,15 @@ const handleClear = (): void => {
   URL.revokeObjectURL(state.selectedImageLink)
   state.selectedImage = null
   state.selectedImageLink = ''
+}
+
+const handleDownloadImage = (): void => {
+  const link = document.createElement('a')
+  link.download = state.selectedImageName
+  link.style.display = 'none'
+  link.href = state.selectedImageLink
+  link.click()
+  link.remove()
 }
 
 const handleFileInput = (event: Event): null | void => {
@@ -106,6 +117,11 @@ const handleSelectFilter = (event: Event): void => {
 const handleThresholdInput = (event: Event): null | void => {
   const { value } = event.target as HTMLInputElement
   state.thresholdValue = Number(value)
+}
+
+const togglePreviewModal = (): void => {
+  console.log('toggle preview modal')
+  state.showPreviewModal = !state.showPreviewModal
 }
 
 const handleSubmit = async (): Promise<null | void> => {
@@ -186,7 +202,7 @@ const handleSubmit = async (): Promise<null | void> => {
             :src="state.selectedImageLink"
           >
         </div>
-        <div class="f">
+        <div class="f previews">
           <div
             v-for="image in state.storedImages"
             :key="image.id"
@@ -203,6 +219,28 @@ const handleSubmit = async (): Promise<null | void> => {
               >
             </button>
           </div>
+        </div>
+        <div class="f j-end mt-half mb-half">
+          <button
+            class="f ai-center preview-modal-button"
+            type="button"
+            @click="togglePreviewModal"
+          >
+            <PreviewIcon
+              :color="'black'"
+              :size="24"
+            />
+          </button>
+          <button
+            class="f ai-center ml-1 preview-modal-button"
+            type="button"
+            @click="handleDownloadImage"
+          >
+            <DownloadIcon
+              :color="'black'"
+              :size="24"
+            />
+          </button>
         </div>
         <select
           :value="state.selectedFilter.value"
@@ -280,6 +318,14 @@ const handleSubmit = async (): Promise<null | void> => {
 .image-preview-button {
   background-color: transparent;
   padding: 0;
+}
+.preview-modal-button {
+  background-color: transparent;
+  height: 24px;
+  padding: 0;
+}
+.previews {
+  margin-top: var(--spacer-quarter);
 }
 .wrap {
   min-height: 100vh;

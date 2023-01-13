@@ -79,14 +79,17 @@ header {
   height: calc(var(--spacer) + var(--spacer-half) + var(--spacer-quarter));
   transition: background-color var(--transition) ease-out,
     border var(--transition) ease-out,
+    box-shadow var(--transition) ease-out,
     color var(--transition) ease-out;
 }
 .about:hover {
   background-color: var(--accent-light);
   border: 1px solid var(--accent-light);
+  box-shadow: 0 0 var(--spacer-half) var(--spacer-quarter) var(--accent-light);
   color: var(--text-inverted);
   transition: background-color var(--transition) ease-in,
     border var(--transition) ease-in,
+    box-shadow var(--transition) ease-in,
     color var(--transition) ease-in;
 }
 .logo, .logo-button {
