@@ -120,7 +120,6 @@ const handleThresholdInput = (event: Event): null | void => {
 }
 
 const togglePreviewModal = (): void => {
-  console.log('toggle preview modal')
   state.showPreviewModal = !state.showPreviewModal
 }
 
@@ -178,6 +177,12 @@ const handleSubmit = async (): Promise<null | void> => {
 
 <template>
   <div class="f d-col j-space-between wrap">
+    <PreviewModal
+      v-if="state.showPreviewModal"
+      :image-link="state.selectedImageLink"
+      @handle-download="handleDownloadImage"
+      @toggle-modal="togglePreviewModal"
+    />
     <HeaderComponent />
     <main class="f d-col ai-center j-center">
       <div v-if="state.loading">
@@ -220,11 +225,11 @@ const handleSubmit = async (): Promise<null | void> => {
             </button>
           </div>
         </div>
-        <div class="f j-end mt-half mb-half">
+        <div class="f j-end mb-quarter mt-quarter">
           <button
             class="f ai-center preview-modal-button"
             type="button"
-            @click="togglePreviewModal"
+            @click.stop="togglePreviewModal"
           >
             <PreviewIcon
               :color="'black'"
