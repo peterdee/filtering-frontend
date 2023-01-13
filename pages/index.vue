@@ -46,8 +46,16 @@ onBeforeUnmount((): void => {
 
 const handleClear = (): void => {
   URL.revokeObjectURL(state.selectedImageLink)
+
+  state.storedImages.forEach((storedImage: StoredImage): void => {
+    URL.revokeObjectURL(storedImage.fileLink)
+  })
+
   state.selectedImage = null
+  state.selectedImageId = null
   state.selectedImageLink = ''
+  state.selectedImageName = ''
+  state.storedImages = []
 }
 
 const handleDownloadImage = (): void => {

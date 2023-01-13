@@ -69,7 +69,7 @@ useClickOutside<HTMLDivElement>(
 .image, .image-wrap {
   max-height: 100vh;
   max-width: 100vw;
-  opacity: 1;
+  min-width: calc(var(--spacer) * 15);
 }
 .image-wrap {
   z-index: 11;
