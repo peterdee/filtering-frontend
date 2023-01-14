@@ -1,16 +1,26 @@
 <script setup lang="ts">
-defineProps<{
-  color: string;
-  size: number;
-}>()
+import { COLORS } from '../constants'
+
+const props = defineProps({
+  color: {
+    default: COLORS.accent,
+    required: false,
+    type: String
+  },
+  size: {
+    default: 24,
+    required: false,
+    type: Number
+  }
+})
 </script>
 
 <template>
   <svg
     viewBox="0 0 92 92"
     xmlns="http://www.w3.org/2000/svg"
-    :width="size"
-    :height="size"
+    :width="props.size"
+    :height="props.size"
   >
     <path
       d="M91.3,43.8C90.6,42.8,74.4,19,46,19C17.6,19,1.4,42.8,0.7,43.8c-0.9,1.3-0.9,3.1,0,4.5
@@ -21,7 +31,7 @@ defineProps<{
         c2.2-1.7,5-2.4,7.8-2c2.8,0.4,5.3,1.9,7,4.1C57.9,44.3,57,51,52.3,54.5z M51.9,40c0.8,0.7,1.2,1.8,1.2,2.8c0,1-0.4,2.1-1.2,2.8
         c-0.7,0.7-1.8,1.2-2.8,1.2c-1.1,0-2.1-0.4-2.8-1.2c-0.8-0.8-1.2-1.8-1.2-2.8c0-1.1,0.4-2.1,1.2-2.8c0.7-0.8,1.8-1.2,2.8-1.2
         C50.2,38.9,51.2,39.3,51.9,40z"
-      :fill="color || 'black'"
+      :fill="props.color"
     />
   </svg>
 </template>

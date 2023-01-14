@@ -65,7 +65,7 @@ const handleDeleteImage = (): void => {
     return handleClear()
   }
 
-  let selectedImageIndex: number
+  let selectedImageIndex = 0
   for (let i = 0; i < storedImagesLength; i += 1) {
     if (storedImages[i].id === selectedImageId) {
       selectedImageIndex = i
@@ -228,7 +228,7 @@ const handleSubmit = async (): Promise<null | void> => {
       </div>
       <div v-if="!state.selectedImage">
         <input
-          accept="image/png, image/jpg"
+          accept="image/png|image/jpg"
           name="fileSelection"
           type="file"
           @input="handleFileInput"
@@ -245,117 +245,89 @@ const handleSubmit = async (): Promise<null | void> => {
             :src="state.selectedImageLink"
           >
         </div>
-        <div class="f previews">
-          <div
-            v-for="image in state.storedImages"
-            :key="image.id"
-          >
-            <button
-              class="image-preview-button"
-              type="button"
-              @click="handlePreviewClick(image.id)"
+        <div class="f d-col mh-auto controls">
+          <div class="f previews">
+            <div
+              v-for="image in state.storedImages"
+              :key="image.id"
             >
-              <img
-                class="image-preview"
-                alt="Image preview"
-                :src="image.fileLink"
+              <button
+                class="image-preview-button"
+                type="button"
+                @click="handlePreviewClick(image.id)"
               >
-            </button>
+                <img
+                  class="image-preview"
+                  alt="Image preview"
+                  :src="image.fileLink"
+                >
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="f j-end mb-quarter mt-quarter">
-          <button
-            class="f ai-center preview-modal-button"
-            title="Delete selected image"
-            type="button"
-            @click.stop="handleDeleteImage"
-          >
-            <CloseIcon
-              :color="'black'"
-              :size="24"
-            />
-          </button>
-          <button
-            class="f ai-center ml-1 preview-modal-button"
-            title="Preview selected image"
-            type="button"
-            @click.stop="togglePreviewModal"
-          >
-            <PreviewIcon
-              :color="'black'"
-              :size="24"
-            />
-          </button>
-          <button
-            class="f ai-center ml-1 preview-modal-button"
-            title="Download selected image"
-            type="button"
-            @click="handleDownloadImage"
-          >
-            <DownloadIcon
-              :color="'black'"
-              :size="24"
-            />
-          </button>
-        </div>
-        <select
-          :value="state.selectedFilter.value"
-          @change="handleSelectFilter"
-        >
-          <option
-            v-for="option in filters"
-            :key="option.value"
-            :value="option.value"
-          >
-            {{ option.name }}
-          </option>
-        </select>
-        <div v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'">
+          <ImageControlsComponent
+            @handle-delete-image="handleDeleteImage"
+            @handle-download-image="handleDownloadImage"
+            @toggle-modal="togglePreviewModal"
+          />
           <select
-            :value="state.grayscaleType"
-            @change="handleGrayscaleSelection"
+            :value="state.selectedFilter.value"
+            @change="handleSelectFilter"
           >
-            <option value="average">
-              Average
-            </option>
-            <option value="luminocity">
-              Luminocity
+            <option
+              v-for="option in filters"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.name }}
             </option>
           </select>
-        </div>
-        <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
-          <div v-if="state.selectedFilter.controlType === 'range'">
-            <RangeComponent
-              :handle-range-input="handleRangeInput"
-              :selected-filter="state.selectedFilter"
-              :threshold-value="state.thresholdValue"
-            />
-          </div>
-          <div v-if="state.selectedFilter.controlType === 'input'">
-            <input
-              class="mt-1"
-              placeholder="Blur amount"
-              type="number"
-              :min="state.selectedFilter.thresholdMin"
-              :value="state.thresholdValue"
-              @input="handleThresholdInput"
+          <div v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'">
+            <select
+              :value="state.grayscaleType"
+              @change="handleGrayscaleSelection"
             >
+              <option value="average">
+                Average
+              </option>
+              <option value="luminocity">
+                Luminocity
+              </option>
+            </select>
           </div>
+          <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
+            <div v-if="state.selectedFilter.controlType === 'range'">
+              <RangeComponent
+                :handle-range-input="handleRangeInput"
+                :selected-filter="state.selectedFilter"
+                :threshold-value="state.thresholdValue"
+              />
+            </div>
+            <div v-if="state.selectedFilter.controlType === 'input'">
+              <input
+                class="mt-1"
+                placeholder="Blur amount"
+                type="number"
+                :min="state.selectedFilter.thresholdMin"
+                :value="state.thresholdValue"
+                @input="handleThresholdInput"
+              >
+            </div>
+          </div>
+          <button
+            class="mt-half"
+            type="button"
+            @click="handleSubmit"
+          >
+            Apply filter
+          </button>
+          <button
+            class="mt-half"
+            type="button"
+            @click="handleClear"
+          >
+            Clear
+          </button>
         </div>
-        <button
-          class="mt-1"
-          type="button"
-          @click="handleSubmit"
-        >
-          Apply filter
-        </button>
-        <button
-          class="mt-1"
-          type="button"
-          @click="handleClear"
-        >
-          Clear
-        </button>
       </div>
     </main>
     <FooterComponent />
@@ -367,17 +339,17 @@ const handleSubmit = async (): Promise<null | void> => {
   max-height: 50vh;
   max-width: 90vw;
 }
+.controls {
+  max-width: calc(var(--spacer) * 25);
+  min-width: calc(var(--spacer) * 15);
+  width: 50%;
+}
 .image-preview, .image-preview-button {
   max-height: 4vh;
   max-width: 8vw;
 }
 .image-preview-button {
   background-color: transparent;
-  padding: 0;
-}
-.preview-modal-button {
-  background-color: transparent;
-  height: 24px;
   padding: 0;
 }
 .previews {
