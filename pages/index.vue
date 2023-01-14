@@ -2,13 +2,8 @@
 import axios from 'axios'
 import 'common-styles/styles.css'
 
-import filters, { Filter } from '../utilities/filter-list'
-
-interface StoredImage {
-  file: File;
-  fileLink: string;
-  id: number;
-}
+import filters, { type Filter } from '../utilities/filter-list'
+import type { StoredImage } from '../types'
 
 interface ComponentState {
   grayscaleType: string;
@@ -128,7 +123,10 @@ const handleGrayscaleSelection = (event: Event): void => {
   state.grayscaleType = value
 }
 
-const handlePreviewClick = (id: number): void => {
+const handlePreviewClick = (id: number): null | void => {
+  if (state.selectedImageId === id) {
+    return null
+  }
   const [newSelectedImage] = state.storedImages.filter(
     (image: StoredImage): boolean => image.id === id
   )
@@ -236,34 +234,24 @@ const handleSubmit = async (): Promise<null | void> => {
       </div>
       <div
         v-if="state.selectedImage && !state.loading"
+        class="image"
+        @dblclick="togglePreviewModal"
+      >
+        <img
+          alt="Selected image"
+          class="image"
+          :src="state.selectedImageLink"
+        >
+      </div>
+      <div
+        v-if="state.selectedImage && !state.loading"
         class="f d-col"
       >
-        <div class="image">
-          <img
-            alt="Selected image"
-            class="image"
-            :src="state.selectedImageLink"
-          >
-        </div>
         <div class="f d-col mh-auto controls">
-          <div class="f previews">
-            <div
-              v-for="image in state.storedImages"
-              :key="image.id"
-            >
-              <button
-                class="image-preview-button"
-                type="button"
-                @click="handlePreviewClick(image.id)"
-              >
-                <img
-                  class="image-preview"
-                  alt="Image preview"
-                  :src="image.fileLink"
-                >
-              </button>
-            </div>
-          </div>
+          <PreviewsComponent
+            :images="state.storedImages"
+            @handle-click="handlePreviewClick"
+          />
           <ImageControlsComponent
             @handle-delete-image="handleDeleteImage"
             @handle-download-image="handleDownloadImage"
@@ -343,17 +331,6 @@ const handleSubmit = async (): Promise<null | void> => {
   max-width: calc(var(--spacer) * 25);
   min-width: calc(var(--spacer) * 15);
   width: 50%;
-}
-.image-preview, .image-preview-button {
-  max-height: 4vh;
-  max-width: 8vw;
-}
-.image-preview-button {
-  background-color: transparent;
-  padding: 0;
-}
-.previews {
-  margin-top: var(--spacer-quarter);
 }
 .wrap {
   min-height: 100vh;

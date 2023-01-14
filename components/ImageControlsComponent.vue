@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { SPACER } from '../constants'
+
 const emit = defineEmits([
   'handle-delete-image',
   'handle-download-image',
@@ -14,7 +16,7 @@ const emit = defineEmits([
       type="button"
       @click="emit('handle-delete-image')"
     >
-      <CloseIcon />
+      <CloseIcon :size="SPACER" />
     </button>
     <button
       class="f ai-center ml-1 icon-button"
