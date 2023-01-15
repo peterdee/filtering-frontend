@@ -226,8 +226,7 @@ const handleSubmit = async (): Promise<null | void> => {
       </div>
       <div v-if="!state.selectedImage">
         <input
-          accept="image/png|image/jpg"
-          name="fileSelection"
+          accept="image/jpeg, image/png"
           type="file"
           @input="handleFileInput"
         >
@@ -245,77 +244,76 @@ const handleSubmit = async (): Promise<null | void> => {
       </div>
       <div
         v-if="state.selectedImage && !state.loading"
-        class="f d-col"
+        class="f d-col mh-auto controls"
       >
-        <div class="f d-col mh-auto controls">
-          <PreviewsComponent
-            :images="state.storedImages"
-            @handle-click="handlePreviewClick"
-          />
-          <ImageControlsComponent
-            @handle-delete-image="handleDeleteImage"
-            @handle-download-image="handleDownloadImage"
-            @toggle-modal="togglePreviewModal"
-          />
-          <select
-            :value="state.selectedFilter.value"
-            @change="handleSelectFilter"
+        <PreviewsComponent
+          :images="state.storedImages"
+          @handle-click="handlePreviewClick"
+        />
+        <ImageControlsComponent
+          @handle-delete-image="handleDeleteImage"
+          @handle-download-image="handleDownloadImage"
+          @toggle-modal="togglePreviewModal"
+        />
+        <select
+          class="select"
+          :value="state.selectedFilter.value"
+          @change="handleSelectFilter"
+        >
+          <option
+            v-for="option in filters"
+            :key="option.value"
+            :value="option.value"
           >
-            <option
-              v-for="option in filters"
-              :key="option.value"
-              :value="option.value"
-            >
-              {{ option.name }}
-            </option>
-          </select>
-          <div v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'">
-            <select
-              :value="state.grayscaleType"
-              @change="handleGrayscaleSelection"
-            >
-              <option value="average">
-                Average
-              </option>
-              <option value="luminocity">
-                Luminocity
-              </option>
-            </select>
+            {{ option.name }}
+          </option>
+        </select>
+        <select
+          v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
+          class="mt-half select"
+          :value="state.grayscaleType"
+          @change="handleGrayscaleSelection"
+        >
+          <option value="average">
+            Average
+          </option>
+          <option value="luminocity">
+            Luminocity
+          </option>
+        </select>
+        <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
+          <div v-if="state.selectedFilter.controlType === 'range'">
+            <RangeComponent
+              :handle-range-input="handleRangeInput"
+              :selected-filter="state.selectedFilter"
+              :threshold-value="state.thresholdValue"
+            />
           </div>
-          <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
-            <div v-if="state.selectedFilter.controlType === 'range'">
-              <RangeComponent
-                :handle-range-input="handleRangeInput"
-                :selected-filter="state.selectedFilter"
-                :threshold-value="state.thresholdValue"
-              />
-            </div>
-            <div v-if="state.selectedFilter.controlType === 'input'">
-              <input
-                class="mt-1"
-                type="number"
-                :min="state.selectedFilter.thresholdMin"
-                :placeholder="state.selectedFilter.inputPlaceholder || 'Amount'"
-                :value="state.thresholdValue"
-                @input="handleThresholdInput"
-              >
-            </div>
+          <div v-if="state.selectedFilter.controlType === 'input'">
+            <input
+              class="mt-half input"
+              type="number"
+              :min="state.selectedFilter.thresholdMin"
+              :placeholder="state.selectedFilter.inputPlaceholder || 'Amount'"
+              :value="state.thresholdValue"
+              @input="handleThresholdInput"
+            >
           </div>
-          <button
-            class="mt-half"
-            type="button"
-            @click="handleSubmit"
-          >
-            Apply filter
-          </button>
-          <button
-            class="mt-half"
-            type="button"
-            @click="handleClear"
-          >
-            Clear
-          </button>
         </div>
+        <button
+          class="mt-half control-button"
+          type="button"
+          @click="handleSubmit"
+        >
+          Apply filter
+        </button>
+        <button
+          class="mt-half control-button"
+          type="button"
+          @click="handleClear"
+        >
+          Clear
+        </button>
       </div>
     </main>
     <FooterComponent />
@@ -325,12 +323,36 @@ const handleSubmit = async (): Promise<null | void> => {
 <style scoped>
 .image {
   max-height: 50vh;
-  max-width: 90vw;
+  max-width: calc(100vw - (var(--spacer) * 2));
 }
 .controls {
   max-width: calc(var(--spacer) * 25);
   min-width: calc(var(--spacer) * 15);
   width: 50%;
+}
+.control-button {
+  height: calc(var(--spacer) * 2 - var(--spacer-quarter));
+}
+.input {
+  height: calc(var(--spacer) * 2 - var(--spacer-quarter));
+  width: 100%;
+}
+.select {
+  border: calc(var(--spacer-quarter) / 4) solid var(--accent);
+  border-radius: var(--spacer-quarter);
+  cursor: pointer;
+  height: calc(var(--spacer) * 2 - var(--spacer-quarter));
+  outline: none;
+  padding: 0 var(--spacer);
+  transition: border var(--transition) ease-out;
+}
+.select:focus {
+  border: calc(var(--spacer-quarter) / 4) solid var(--accent-light);
+  transition: border var(--transition) ease-in;
+}
+.select:hover {
+  border: calc(var(--spacer-quarter) / 4) solid var(--accent-light);
+  transition: border var(--transition) ease-in;
 }
 .wrap {
   min-height: 100vh;
