@@ -1,5 +1,6 @@
 export interface Filter {
   controlType: 'input' | 'range';
+  inputPlaceholder?: string;
   isGrayscale: boolean;
   name: string;
   step: number;
@@ -24,6 +25,7 @@ export default [
   },
   {
     controlType: 'input',
+    inputPlaceholder: 'Blur radius',
     isGrayscale: false,
     name: 'Box blur',
     step: 1,
@@ -131,6 +133,18 @@ export default [
     thresholdMin: 0,
     value: 'grayscale',
     withThreshold: false
+  },
+  {
+    controlType: 'input',
+    inputPlaceholder: 'Rotation angle',
+    isGrayscale: false,
+    name: 'Hue rotation',
+    step: 1,
+    thresholdDefault: 0,
+    thresholdMax: 0,
+    thresholdMin: 0,
+    value: 'hueRotate',
+    withThreshold: true
   },
   {
     controlType: 'range',

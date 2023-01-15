@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
 import useClickOutside from '../utilities/use-click-outside'
 
@@ -40,16 +39,6 @@ useClickOutside<HTMLDivElement>(
 </template>
 
 <style scoped>
-.close {
-  background-color: transparent;
-  border-radius: 50%;
-  height: calc(var(--spacer) * 3 + var(--spacer-half));
-  padding: 0;
-  width: calc(var(--spacer) * 3 + var(--spacer-half));
-}
-.close:hover {
-  background-color: var(--accent-light);
-}
 .modal-background, .modal-tint {
   backdrop-filter: blur(var(--spacer-quarter));
   background-color: transparent;
@@ -60,16 +49,16 @@ useClickOutside<HTMLDivElement>(
   width: 100vw;
 }
 .modal-tint {
-  background-color: #000000;
+  background-color: var(--text);
   opacity: .5;
-}
-.modal-content {
-  position: fixed;
 }
 .image, .image-wrap {
   max-height: 100vh;
   max-width: 100vw;
   min-width: calc(var(--spacer) * 15);
+}
+.image {
+  box-shadow: 0 0 var(--spacer) var(--spacer-quarter) var(--text);
 }
 .image-wrap {
   z-index: 11;

@@ -293,9 +293,9 @@ const handleSubmit = async (): Promise<null | void> => {
             <div v-if="state.selectedFilter.controlType === 'input'">
               <input
                 class="mt-1"
-                placeholder="Blur amount"
                 type="number"
                 :min="state.selectedFilter.thresholdMin"
+                :placeholder="state.selectedFilter.inputPlaceholder || 'Amount'"
                 :value="state.thresholdValue"
                 @input="handleThresholdInput"
               >
