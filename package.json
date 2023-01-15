@@ -1,7 +1,12 @@
 {
   "name": "filtering-frontend",
   "description": "Brille module demo",
+  "version": "0.0.1",
   "private": true,
+  "author": {
+    "name": "Peter Dyumin",
+    "url": "https://github.com/peterdee"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -10,6 +15,15 @@
     "postinstall": "nuxt prepare",
     "preview": "nuxt preview"
   },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterdee/filtering-frontend"
+  },
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.2.2",
     "common-styles": "github:julyskies/common-styles"

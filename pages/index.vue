@@ -255,58 +255,62 @@ const handleSubmit = async (): Promise<null | void> => {
           @handle-download-image="handleDownloadImage"
           @toggle-modal="togglePreviewModal"
         />
-        <select
-          class="select"
-          :value="state.selectedFilter.value"
-          @change="handleSelectFilter"
+        <form
+          class="f d-col form"
+          @submit.prevent="handleSubmit"
         >
-          <option
-            v-for="option in filters"
-            :key="option.value"
-            :value="option.value"
+          <select
+            class="select"
+            :value="state.selectedFilter.value"
+            @change="handleSelectFilter"
           >
-            {{ option.name }}
-          </option>
-        </select>
-        <select
-          v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
-          class="mt-half select"
-          :value="state.grayscaleType"
-          @change="handleGrayscaleSelection"
-        >
-          <option value="average">
-            Average
-          </option>
-          <option value="luminocity">
-            Luminocity
-          </option>
-        </select>
-        <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
-          <div v-if="state.selectedFilter.controlType === 'range'">
-            <RangeComponent
-              :handle-range-input="handleRangeInput"
-              :selected-filter="state.selectedFilter"
-              :threshold-value="state.thresholdValue"
-            />
-          </div>
-          <div v-if="state.selectedFilter.controlType === 'input'">
-            <input
-              class="mt-half input"
-              type="number"
-              :min="state.selectedFilter.thresholdMin"
-              :placeholder="state.selectedFilter.inputPlaceholder || 'Amount'"
-              :value="state.thresholdValue"
-              @input="handleThresholdInput"
+            <option
+              v-for="option in filters"
+              :key="option.value"
+              :value="option.value"
             >
+              {{ option.name }}
+            </option>
+          </select>
+          <select
+            v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
+            class="mt-half select"
+            :value="state.grayscaleType"
+            @change="handleGrayscaleSelection"
+          >
+            <option value="average">
+              Average
+            </option>
+            <option value="luminocity">
+              Luminocity
+            </option>
+          </select>
+          <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
+            <div v-if="state.selectedFilter.controlType === 'range'">
+              <RangeComponent
+                :handle-range-input="handleRangeInput"
+                :selected-filter="state.selectedFilter"
+                :threshold-value="state.thresholdValue"
+              />
+            </div>
+            <div v-if="state.selectedFilter.controlType === 'input'">
+              <input
+                class="mt-half input"
+                type="number"
+                :min="state.selectedFilter.thresholdMin"
+                :placeholder="state.selectedFilter.inputPlaceholder || 'Amount'"
+                :value="state.thresholdValue"
+                @input="handleThresholdInput"
+              >
+            </div>
           </div>
-        </div>
-        <button
-          class="mt-half control-button"
-          type="button"
-          @click="handleSubmit"
-        >
-          Apply filter
-        </button>
+          <button
+            class="mt-half control-button"
+            type="submit"
+          >
+            Apply filter
+          </button>
+        </form>
         <button
           class="mt-half control-button"
           type="button"
@@ -332,6 +336,9 @@ const handleSubmit = async (): Promise<null | void> => {
 }
 .control-button {
   height: calc(var(--spacer) * 2 - var(--spacer-quarter));
+}
+.form {
+  width: 100%;
 }
 .input {
   height: calc(var(--spacer) * 2 - var(--spacer-quarter));
