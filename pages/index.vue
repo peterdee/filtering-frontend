@@ -231,17 +231,11 @@ const handleSubmit = async (): Promise<null | void> => {
           @input="handleFileInput"
         >
       </div>
-      <div
+      <DisplayImageComponent
         v-if="state.selectedImage && !state.loading"
-        class="image"
-        @dblclick="togglePreviewModal"
-      >
-        <img
-          alt="Selected image"
-          class="image"
-          :src="state.selectedImageLink"
-        >
-      </div>
+        :image-link="state.selectedImageLink"
+        @toggle-modal="togglePreviewModal"
+      />
       <div
         v-if="state.selectedImage && !state.loading"
         class="f d-col mh-auto controls"
@@ -272,13 +266,12 @@ const handleSubmit = async (): Promise<null | void> => {
             @handle-select="handleGrayscaleSelection"
           />
           <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
-            <div v-if="state.selectedFilter.controlType === 'range'">
-              <RangeComponent
-                :handle-range-input="handleRangeInput"
-                :selected-filter="state.selectedFilter"
-                :threshold-value="state.thresholdValue"
-              />
-            </div>
+            <RangeComponent
+              v-if="state.selectedFilter.controlType === 'range'"
+              :handle-range-input="handleRangeInput"
+              :selected-filter="state.selectedFilter"
+              :threshold-value="state.thresholdValue"
+            />
             <input
               v-if="state.selectedFilter.controlType === 'input'"
               class="mt-half input"
@@ -310,10 +303,6 @@ const handleSubmit = async (): Promise<null | void> => {
 </template>
 
 <style scoped>
-.image {
-  max-height: 50vh;
-  max-width: calc(100vw - (var(--spacer) * 2));
-}
 .controls {
   max-width: calc(var(--spacer) * 25);
   min-width: calc(var(--spacer) * 15);
