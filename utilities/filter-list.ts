@@ -141,8 +141,8 @@ export default [
     name: 'Hue rotation',
     step: 1,
     thresholdDefault: 0,
-    thresholdMax: 0,
-    thresholdMin: 0,
+    thresholdMax: Infinity,
+    thresholdMin: -Infinity,
     value: 'hueRotate',
     withThreshold: true
   },
