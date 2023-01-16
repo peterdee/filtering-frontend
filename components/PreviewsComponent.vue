@@ -11,14 +11,13 @@ const props = defineProps<{
 
 const scrollRef = ref<HTMLDivElement>()
 
-onMounted((): void => {
+const moveScroll = (): void => {
   if (scrollRef.value) {
     scrollRef.value.scrollTo({
-      behavior: 'smooth',
-      left: scrollRef.value.scrollWidth + 500
+      left: scrollRef.value.scrollWidth
     })
   }
-})
+}
 </script>
 
 <template>
@@ -36,9 +35,10 @@ onMounted((): void => {
         @click="emit('handle-click', image.id)"
       >
         <img
-          class="image-preview"
           alt="Image preview"
+          class="image-preview"
           :src="image.fileLink"
+          @load="moveScroll"
         >
       </button>
     </div>

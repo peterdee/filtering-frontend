@@ -31,20 +31,17 @@ const state = reactive<ComponentState>({
   thresholdValue: filters[0].thresholdDefault
 })
 
-onBeforeUnmount((): void => {
+const revokeLinks = (): void => {
   URL.revokeObjectURL(state.selectedImageLink)
-
   state.storedImages.forEach((storedImage: StoredImage): void => {
     URL.revokeObjectURL(storedImage.fileLink)
   })
-})
+}
+
+onBeforeUnmount((): void => revokeLinks())
 
 const handleClear = (): void => {
-  URL.revokeObjectURL(state.selectedImageLink)
-
-  state.storedImages.forEach((storedImage: StoredImage): void => {
-    URL.revokeObjectURL(storedImage.fileLink)
-  })
+  revokeLinks()
 
   state.selectedImage = null
   state.selectedImageId = null
@@ -148,8 +145,7 @@ const handleSelectFilter = (event: Event): void => {
   state.thresholdValue = state.selectedFilter.thresholdDefault
 }
 
-const handleThresholdInput = (event: Event): null | void => {
-  const { value } = event.target as HTMLInputElement
+const handleThresholdInput = ({ value }: { value: string }): void => {
   state.thresholdValue = Number(value)
 }
 
@@ -272,15 +268,16 @@ const handleSubmit = async (): Promise<null | void> => {
               :selected-filter="state.selectedFilter"
               :threshold-value="state.thresholdValue"
             />
-            <input
+            <InputElement
               v-if="state.selectedFilter.controlType === 'input'"
-              class="mt-half input"
+              name="threshold"
               type="number"
+              :global-classes="'mt-half'"
               :min="state.selectedFilter.thresholdMin"
-              :placeholder="state.selectedFilter.inputPlaceholder || 'Amount'"
+              :placeholder="state.selectedFilter.inputPlaceholder"
               :value="state.thresholdValue"
-              @input="handleThresholdInput"
-            >
+              @handle-input="handleThresholdInput"
+            />
           </div>
           <button
             class="mt-half control-button"
@@ -312,10 +309,6 @@ const handleSubmit = async (): Promise<null | void> => {
   height: calc(var(--spacer) * 2 - var(--spacer-quarter));
 }
 .form {
-  width: 100%;
-}
-.input {
-  height: calc(var(--spacer) * 2 - var(--spacer-quarter));
   width: 100%;
 }
 .wrap {
