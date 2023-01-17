@@ -254,30 +254,33 @@ const handleSubmit = async (): Promise<null | void> => {
             :value="state.selectedFilter.value"
             @handle-select="handleSelectFilter"
           />
-          <SelectionComponent
-            v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
-            :global-classes="'mt-half'"
-            :select-type="'grayscale'"
-            :value="state.grayscaleType"
-            @handle-select="handleGrayscaleSelection"
-          />
-          <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
-            <RangeComponent
-              v-if="state.selectedFilter.controlType === 'range'"
-              :handle-range-input="handleRangeInput"
-              :selected-filter="state.selectedFilter"
-              :threshold-value="state.thresholdValue"
-            />
-            <InputElement
-              v-if="state.selectedFilter.controlType === 'input'"
-              name="threshold"
-              type="number"
+          <div class="f d-col additional-options">
+            <SelectionComponent
+              v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
               :global-classes="'mt-half'"
-              :min="state.selectedFilter.thresholdMin"
-              :placeholder="state.selectedFilter.inputPlaceholder"
-              :value="state.thresholdValue"
-              @handle-input="handleThresholdInput"
+              :select-type="'grayscale'"
+              :value="state.grayscaleType"
+              @handle-select="handleGrayscaleSelection"
             />
+            <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
+              <RangeComponent
+                v-if="state.selectedFilter.controlType === 'range'"
+                :global-classes="'mt-half'"
+                :selected-filter="state.selectedFilter"
+                :threshold-value="state.thresholdValue"
+                @handle-input="handleRangeInput"
+              />
+              <InputElement
+                v-if="state.selectedFilter.controlType === 'input'"
+                name="threshold"
+                type="number"
+                :global-classes="'mt-half'"
+                :min="state.selectedFilter.thresholdMin"
+                :placeholder="state.selectedFilter.inputPlaceholder"
+                :value="state.thresholdValue"
+                @handle-input="handleThresholdInput"
+              />
+            </div>
           </div>
           <button
             class="mt-half control-button"
@@ -310,6 +313,9 @@ const handleSubmit = async (): Promise<null | void> => {
 }
 .form {
   width: 100%;
+}
+.additional-options {
+  height: calc(var(--spacer) * 3);
 }
 .wrap {
   min-height: 100vh;

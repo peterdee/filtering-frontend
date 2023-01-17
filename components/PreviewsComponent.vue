@@ -23,7 +23,7 @@ const moveScroll = (): void => {
 <template>
   <div
     ref="scrollRef"
-    class="f images-row"
+    class="f images-row mt-quarter"
   >
     <div
       v-for="image in props.images"
@@ -55,7 +55,6 @@ const moveScroll = (): void => {
   padding: 0;
 }
 .images-row {
-  margin-top: var(--spacer-quarter);
   overflow-x: scroll;
 }
 .images-row::-webkit-scrollbar {

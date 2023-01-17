@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import type { Filter } from '../utilities/filter-list'
 
+const emit = defineEmits(['handle-input'])
+
 defineProps<{
-  handleRangeInput: (event: Event) => void;
+  globalClasses?: string;
   selectedFilter: Filter;
   thresholdValue: number | string;
 }>()
+
+const handle = (event: Event): void => emit('handle-input', event)
 </script>
 
 <template>
-  <div class="f d-col">
-    <div class="f j-center ai-center">
-      <span class="mr-1">
+  <div :class="`f d-col ${globalClasses || ''}`">
+    <div class="f j-space-between ai-center">
+      <span class="f j-start mr-half text values">
         {{ selectedFilter.thresholdMin }}
       </span>
       <input
@@ -20,104 +24,88 @@ defineProps<{
         :min="selectedFilter.thresholdMin"
         :step="selectedFilter.step"
         :value="thresholdValue"
-        @input="handleRangeInput"
+        @input="handle"
       >
-      <span class="ml-1">
+      <span class="f j-end ml-half text values">
         {{ selectedFilter.thresholdMax }}
       </span>
     </div>
-    <div class="f j-center">
+    <div class="f j-center mt-quarter text">
       {{ thresholdValue }}
     </div>
   </div>
 </template>
 
 <style scoped>
+.text {
+  font-size: calc(var(--spacer) - var(--spacer-quarter));
+}
+.values {
+  width: calc(var(--spacer) * 2 + var(--spacer-half));
+}
 input[type=range] {
-  height: 10px;
-  margin: 10px 0;
-  width: 100%;
+  appearance: none;
+  width: calc(100% - var(--spacer) * 5);
+  -webkit-appearance: none;
 }
 input[type=range]:focus {
   outline: none;
 }
 input[type=range]::-webkit-slider-runnable-track {
-  background: var(--accent);
+  background: var(--muted-light);
   border-radius: var(--spacer-half);
   cursor: pointer;
-  height: 10px;
+  height: calc(var(--spacer) - var(--spacer-quarter));
   width: 100%;
 }
 input[type=range]::-webkit-slider-thumb {
-  border: 2px solid #3478ab;
-  height: var(--spacer);
-  width: calc(var(--spacer) - var(--spacer-quarter));
-  border-radius: var(--spacer-half);
-  background-color: var(--background);
+  background: var(--accent);
+  border-radius: var(--spacer-quarter);
   cursor: pointer;
-  margin-top: -3px;
-}
-input[type=range]::slider-thumb {
-  border: 2px solid #3478ab;
   height: var(--spacer);
+  margin-top: calc(var(--spacer-quarter) / 2 * -1);
   width: calc(var(--spacer) - var(--spacer-quarter));
-  border-radius: var(--spacer-half);
-  background: var(--background);
-  cursor: pointer;
-  margin-top: -3px;
+  -webkit-appearance: none;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
-  background: var(--accent);
+  background: var(--muted-light);
 }
 input[type=range]::-moz-range-track {
-  width: 100%;
-  height: 10px;
+  background: var(--muted-light);
+  border-radius: var(--spacer-half);
   cursor: pointer;
-  box-shadow: 0px 0px 0px #ffffff;
-  background: #367aad;
-  border-radius: 8px;
+  height: calc(var(--spacer) - var(--spacer-quarter));
+  width: 100%;
 }
 input[type=range]::-moz-range-thumb {
-  box-shadow: 0px 0px 0px #ffffff;
-  border: 2px solid #3478ab;
-  height: 16px;
-  width: 12px;
-  border-radius: 8px;
-  background: #ffffff;
+  background: var(--accent);
+  border-radius: var(--spacer-quarter);
   cursor: pointer;
+  height: var(--spacer);
+  width: calc(var(--spacer) - var(--spacer-quarter));
 }
 input[type=range]::-ms-track {
-  width: 100%;
-  height: 10px;
-  cursor: pointer;
   background: transparent;
   border-color: transparent;
   color: transparent;
+  cursor: pointer;
+  height: calc(var(--spacer) - var(--spacer-quarter));
+  width: 100%;
 }
-input[type=range]::-ms-fill-lower {
-  background: #367aad;
-  border-radius: 8px;
-  box-shadow: 0px 0px 0px #ffffff;
-}
+input[type=range]::-ms-fill-lower,
 input[type=range]::-ms-fill-upper {
-  background: #367aad;
-  border-radius: 8px;
-  box-shadow: 0px 0px 0px #ffffff;
+  background: var(--muted-light);
+  border-radius: var(--spacer);
 }
 input[type=range]::-ms-thumb {
-  margin-top: 1px;
-  box-shadow: 0px 0px 0px #ffffff;
-  border: 2px solid #3478ab;
-  height: 16px;
-  width: 12px;
-  border-radius: 8px;
-  background: #ffffff;
+  background: var(--accent);
+  border-radius: var(--spacer-quarter);
   cursor: pointer;
+  height: var(--spacer);
+  width: calc(var(--spacer) - var(--spacer-quarter));
 }
-input[type=range]:focus::-ms-fill-lower {
-  background: #367aad;
-}
+input[type=range]:focus::-ms-fill-lower,
 input[type=range]:focus::-ms-fill-upper {
-  background: #367aad;
+  background: var(--muted-light);
 }
 </style>
