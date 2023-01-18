@@ -7,6 +7,7 @@ const emit = defineEmits(['handle-click'])
 
 const props = defineProps<{
   images: StoredImage[];
+  selectedImageId: number;
 }>()
 
 const scrollRef = ref<HTMLDivElement>()
@@ -23,7 +24,7 @@ const moveScroll = (): void => {
 <template>
   <div
     ref="scrollRef"
-    class="f images-row mt-quarter"
+    class="f mt-quarter images-row"
   >
     <div
       v-for="image in props.images"
@@ -32,11 +33,15 @@ const moveScroll = (): void => {
       <button
         class="image-preview-button"
         type="button"
+        :title="`${image.appliedFilter === 'original'
+          ? 'Original image'
+          : `Applied filter: ${image.appliedFilter}`
+        }`"
         @click="emit('handle-click', image.id)"
       >
         <img
           alt="Image preview"
-          class="image-preview"
+          :class="`image-preview ${image.id === selectedImageId ? 'selected' : ''}`"
           :src="image.fileLink"
           @load="moveScroll"
         >
@@ -47,8 +52,13 @@ const moveScroll = (): void => {
 
 <style scoped>
 .image-preview, .image-preview-button {
-  max-height: 4vh;
+  max-height: 5vh;
   max-width: 8vw;
+  min-height: calc(var(--spacer) * 2);
+  min-width: calc(var(--spacer) * 2);
+}
+.image-preview {
+  border: 4px solid transparent;
 }
 .image-preview-button {
   background-color: transparent;
@@ -56,6 +66,7 @@ const moveScroll = (): void => {
 }
 .images-row {
   overflow-x: scroll;
+  overflow-y: hidden;
 }
 .images-row::-webkit-scrollbar {
   height: calc(var(--spacer-half) + var(--spacer-quarter));
@@ -67,5 +78,8 @@ const moveScroll = (): void => {
 .images-row::-webkit-scrollbar-thumb {
   background-color: var(--accent);
   border-radius: var(--spacer-half);
+}
+.selected {
+  border: 4px solid var(--accent-light);
 }
 </style>

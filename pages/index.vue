@@ -109,6 +109,7 @@ const handleFileInput = (event: Event): null | void => {
   }
 
   state.storedImages.push({
+    appliedFilter: 'original',
     file,
     fileLink: state.selectedImageLink,
     id
@@ -172,10 +173,14 @@ const handleSubmit = async (): Promise<null | void> => {
   formData.append('filter', selectedFilter.value)
   formData.append('image', selectedImage, selectedImageName)
 
+  let appliedFilter = selectedFilter.name
+
   if (selectedFilter.value === 'grayscale') {
+    appliedFilter += ` (${grayscaleType})`
     formData.append('grayscaleType', grayscaleType)
   }
   if (selectedFilter.withThreshold) {
+    appliedFilter += ` (${thresholdValue})`
     formData.append('threshold', `${thresholdValue}`)
   }
 
@@ -194,6 +199,7 @@ const handleSubmit = async (): Promise<null | void> => {
     state.selectedImageId = id
     state.selectedImageLink = processedImageLink
     state.storedImages.push({
+      appliedFilter,
       file: response.data,
       fileLink: processedImageLink,
       id
@@ -238,6 +244,7 @@ const handleSubmit = async (): Promise<null | void> => {
       >
         <PreviewsComponent
           :images="state.storedImages"
+          :selected-image-id="Number(state.selectedImageId)"
           @handle-click="handlePreviewClick"
         />
         <ImageControlsComponent
