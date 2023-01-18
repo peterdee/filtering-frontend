@@ -15,7 +15,7 @@ const handle = (event: Event): void => emit('handle-input', event)
 <template>
   <div :class="`f d-col ${globalClasses || ''}`">
     <div class="f j-space-between ai-center">
-      <span class="f j-start mr-half text values">
+      <span class="f j-start mr-half ns text values">
         {{ selectedFilter.thresholdMin }}
       </span>
       <input
@@ -26,11 +26,11 @@ const handle = (event: Event): void => emit('handle-input', event)
         :value="thresholdValue"
         @input="handle"
       >
-      <span class="f j-end ml-half text values">
+      <span class="f j-end ml-half ns text values">
         {{ selectedFilter.thresholdMax }}
       </span>
     </div>
-    <div class="f j-center mt-quarter text">
+    <div class="f j-center mt-quarter ns text">
       {{ thresholdValue }}
     </div>
   </div>

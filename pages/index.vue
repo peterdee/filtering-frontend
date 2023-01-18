@@ -8,6 +8,10 @@ import type { StoredImage } from '../types'
 interface ComponentState {
   grayscaleType: string;
   loading: boolean;
+  originalImageDimensions: {
+    height: number;
+    width: number;
+  };
   selectedFilter: Filter;
   selectedImage: File | null;
   selectedImageId: number | null;
@@ -21,6 +25,10 @@ interface ComponentState {
 const state = reactive<ComponentState>({
   grayscaleType: 'average',
   loading: false,
+  originalImageDimensions: {
+    height: 0,
+    width: 0
+  },
   selectedFilter: filters[0],
   selectedImage: null,
   selectedImageId: null,
@@ -102,6 +110,16 @@ const handleFileInput = (event: Event): null | void => {
   state.selectedImageId = id
   state.selectedImageLink = URL.createObjectURL(files[0])
   state.selectedImageName = file.name
+
+  // get image dimensions
+  const image = new Image()
+  image.src = state.selectedImageLink
+  image.onload = (): void => {
+    state.originalImageDimensions = {
+      height: image.naturalHeight,
+      width: image.naturalWidth
+    }
+  }
 
   if (!state.selectedFilter) {
     state.selectedFilter = filters[0]
@@ -217,7 +235,12 @@ const handleSubmit = async (): Promise<null | void> => {
   <div class="f d-col j-space-between wrap">
     <PreviewModal
       v-if="state.showPreviewModal"
+      :applied-filter="state.storedImages.filter((
+        image: StoredImage
+      ): boolean => image.id === state.selectedImageId)[0].appliedFilter"
+      :image-dimensions="state.originalImageDimensions"
       :image-link="state.selectedImageLink"
+      :image-size="state.selectedImage?.size || 0"
       @handle-download="handleDownloadImage"
       @toggle-modal="togglePreviewModal"
     />
@@ -257,6 +280,7 @@ const handleSubmit = async (): Promise<null | void> => {
           @submit.prevent="handleSubmit"
         >
           <SelectionComponent
+            :global-classes="'ns'"
             :select-type="'filter'"
             :value="state.selectedFilter.value"
             @handle-select="handleSelectFilter"
@@ -264,7 +288,7 @@ const handleSubmit = async (): Promise<null | void> => {
           <div class="f d-col additional-options">
             <SelectionComponent
               v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
-              :global-classes="'mt-half'"
+              :global-classes="'mt-half ns'"
               :select-type="'grayscale'"
               :value="state.grayscaleType"
               @handle-select="handleGrayscaleSelection"

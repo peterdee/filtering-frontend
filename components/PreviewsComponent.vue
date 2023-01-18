@@ -58,7 +58,7 @@ const moveScroll = (): void => {
   min-width: calc(var(--spacer) * 2);
 }
 .image-preview {
-  border: 4px solid transparent;
+  border: var(--spacer-quarter) solid transparent;
 }
 .image-preview-button {
   background-color: transparent;
@@ -80,6 +80,6 @@ const moveScroll = (): void => {
   border-radius: var(--spacer-half);
 }
 .selected {
-  border: 4px solid var(--accent-light);
+  border: var(--spacer-quarter) solid var(--accent-light);
 }
 </style>
