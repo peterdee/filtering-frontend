@@ -1,12 +1,14 @@
 ## filtering-frontend
 
-This is a frontend application for [Brille](https://github.com/julyskies/brille) module demo
+[Brille](https://github.com/julyskies/brille) module demo - frontend
+
+Stack: [Nuxt](https://nuxt.com), [Axios](https://axios-http.com), [common-styles](https://github.com/julyskies/common-styles)
 
 Backend application code is available at https://github.com/peterdee/filtering-backend
 
-DEV: http://localhost:3000
+**DEV**: http://localhost:3000
 
-PRODUCTION: *TBD*
+**PRODUCTION**: https://images.dyum.in
 
 ### Deploy
 
@@ -35,15 +37,19 @@ Development server will be available at http://localhost:3000
 
 Build the application for production:
 
-```bash
+```shell script
 npm run build
 ```
 
 Locally preview production build:
 
-```bash
+```shell script
 npm run preview
 ```
+
+### Vercel deployment
+
+This application is deployed to [Vercel](https://vercel.com)
 
 ### License
 
