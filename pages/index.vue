@@ -94,32 +94,43 @@ const handleDownloadImage = (): void => {
   link.remove()
 }
 
-const handleFileInput = (event: Event): null | void => {
-  const { files } = event.target as HTMLInputElement
-  if (!(files && files.length > 0)) {
-    return null
-  }
-  const file = files[0]
+const handleFileInput = async (file: File): Promise<null | void> => {
   if (file.size > useRuntimeConfig().public.MAX_FILE_SIZE) {
     // TODO: maximum file size error
     return null
   }
+  if (!(file.type === 'image/jpeg' || file.type === 'image/png')) {
+    // TODO: invalid file format error
+    return null
+  }
+
+  // get image dimensions
+  const imageLink = URL.createObjectURL(file)
+  const dimensions = await new Promise<{ height: number, width: number }>(
+    (resolve): void => {
+      const image = new Image()
+      image.src = imageLink
+      image.onload = (): void => {
+        resolve({
+          height: image.naturalHeight,
+          width: image.naturalWidth
+        })
+      }
+    }
+  )
+  if (dimensions.height > 4000 || dimensions.width > 4000) {
+    // TODO: maximum dimensions error
+    URL.revokeObjectURL(imageLink)
+    return null
+  }
+
+  state.originalImageDimensions = dimensions
 
   const id = Date.now()
   state.selectedImage = file
   state.selectedImageId = id
-  state.selectedImageLink = URL.createObjectURL(files[0])
+  state.selectedImageLink = imageLink
   state.selectedImageName = file.name
-
-  // get image dimensions
-  const image = new Image()
-  image.src = state.selectedImageLink
-  image.onload = (): void => {
-    state.originalImageDimensions = {
-      height: image.naturalHeight,
-      width: image.naturalWidth
-    }
-  }
 
   if (!state.selectedFilter) {
     state.selectedFilter = filters[0]
@@ -249,13 +260,10 @@ const handleSubmit = async (): Promise<null | void> => {
       <div v-if="state.loading">
         Loading...
       </div>
-      <div v-if="!state.selectedImage">
-        <input
-          accept="image/jpeg, image/png"
-          type="file"
-          @input="handleFileInput"
-        >
-      </div>
+      <DropZoneComponent
+        v-if="!state.selectedImage"
+        @handle-file="handleFileInput"
+      />
       <DisplayImageComponent
         v-if="state.selectedImage && !state.loading"
         :image-link="state.selectedImageLink"
