@@ -21,6 +21,7 @@ const emit = defineEmits(['toggle-modal'])
 
 <style scoped>
 .image {
+  box-shadow: 0 0 var(--spacer-half) 0 var(--muted-light);
   max-height: 50vh;
   max-width: calc(100vw - (var(--spacer) * 2));
 }

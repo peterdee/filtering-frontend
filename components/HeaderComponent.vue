@@ -33,7 +33,7 @@ const toggleModal = (): void => {
       :href="state.favicon"
     />
     <Title>
-      BRILLE image processing demo
+      Images | dyum.in
     </Title>
   </Head>
   <header class="f ai-center j-space-between ns">
@@ -55,7 +55,7 @@ const toggleModal = (): void => {
     <button
       class="about"
       type="button"
-      @click="toggleModal"
+      @click.stop="toggleModal"
     >
       About
     </button>
