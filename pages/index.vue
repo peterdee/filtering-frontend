@@ -3,9 +3,11 @@ import axios from 'axios'
 import 'common-styles/styles.css'
 
 import filters, { type Filter } from '../utilities/filter-list'
+import formatSize from '../utilities/format-size'
 import type { StoredImage } from '../types'
 
 interface ComponentState {
+  errorMessage: string;
   grayscaleType: string;
   loading: boolean;
   originalImageDimensions: {
@@ -17,12 +19,14 @@ interface ComponentState {
   selectedImageId: number | null;
   selectedImageLink: string;
   selectedImageName: string;
+  showErrorModal: boolean;
   showPreviewModal: boolean;
   storedImages: StoredImage[];
   thresholdValue: number;
 }
 
 const state = reactive<ComponentState>({
+  errorMessage: '',
   grayscaleType: 'average',
   loading: false,
   originalImageDimensions: {
@@ -34,6 +38,7 @@ const state = reactive<ComponentState>({
   selectedImageId: null,
   selectedImageLink: '',
   selectedImageName: '',
+  showErrorModal: false,
   showPreviewModal: false,
   storedImages: [],
   thresholdValue: filters[0].thresholdDefault
@@ -95,16 +100,18 @@ const handleDownloadImage = (): void => {
 }
 
 const handleFileInput = async (file: File): Promise<null | void> => {
-  if (file.size > useRuntimeConfig().public.MAX_FILE_SIZE) {
-    // TODO: maximum file size error
-    return null
+  const maxFileSize = useRuntimeConfig().public.MAX_FILE_SIZE
+  if (file.size > maxFileSize) {
+    state.errorMessage = `Selected file size is too large! Maximum size is ${
+      formatSize(maxFileSize)
+    }!`
+    return toggleErrorModal()
   }
   if (!(file.type === 'image/jpeg' || file.type === 'image/png')) {
-    // TODO: invalid file format error
-    return null
+    state.errorMessage = 'Invalid file format! Only JPEG an PNG files are allowed!'
+    return toggleErrorModal()
   }
 
-  // get image dimensions
   const imageLink = URL.createObjectURL(file)
   const dimensions = await new Promise<{ height: number, width: number }>(
     (resolve): void => {
@@ -119,9 +126,9 @@ const handleFileInput = async (file: File): Promise<null | void> => {
     }
   )
   if (dimensions.height > 4000 || dimensions.width > 4000) {
-    // TODO: maximum dimensions error
     URL.revokeObjectURL(imageLink)
-    return null
+    state.errorMessage = 'Image height and width should be less than 4000 px!'
+    return toggleErrorModal()
   }
 
   state.originalImageDimensions = dimensions
@@ -179,6 +186,10 @@ const handleThresholdInput = ({ value }: { value: string }): void => {
   state.thresholdValue = Number(value)
 }
 
+const toggleErrorModal = (): void => {
+  state.showErrorModal = !state.showErrorModal
+}
+
 const togglePreviewModal = (): void => {
   state.showPreviewModal = !state.showPreviewModal
 }
@@ -192,8 +203,8 @@ const handleSubmit = async (): Promise<null | void> => {
     thresholdValue
   } = state
   if (!(selectedFilter && selectedImage)) {
-    // TODO: error message
-    return null
+    state.errorMessage = 'Please select image and filter!'
+    return toggleErrorModal()
   }
 
   state.loading = true
@@ -237,7 +248,8 @@ const handleSubmit = async (): Promise<null | void> => {
     state.loading = false
   } catch (error) {
     state.loading = false
-    console.log(error)
+    state.errorMessage = 'Something went wrong...'
+    return toggleErrorModal()
   }
 }
 </script>
@@ -254,6 +266,11 @@ const handleSubmit = async (): Promise<null | void> => {
       :image-size="state.selectedImage?.size || 0"
       @handle-download="handleDownloadImage"
       @toggle-modal="togglePreviewModal"
+    />
+    <ErrorModal
+      v-if="state.showErrorModal"
+      :message="state.errorMessage"
+      @toggle-modal="toggleErrorModal"
     />
     <HeaderComponent />
     <main class="f d-col ai-center j-center">
