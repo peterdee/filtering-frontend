@@ -95,11 +95,11 @@ useClickOutside<HTMLDivElement>(
 }
 .close-button {
   background-color: transparent;
-  height: 16px;
+  height: var(--spacer);
   opacity: .5;
   padding: 0;
   transition: opacity var(--transition) ease-out;
-  width: 16px;
+  width: var(--spacer);
 }
 .close-button:hover {
   opacity: 1;

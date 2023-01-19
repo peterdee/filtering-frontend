@@ -36,13 +36,13 @@ const toggleModal = (): void => {
       Images | dyum.in
     </Title>
   </Head>
-  <header class="f ai-center j-space-between ns">
-    <AboutModal
-      v-if="state.showModal"
-      @toggle-modal="toggleModal"
-    />
+  <AboutModal
+    v-if="state.showModal"
+    @toggle-modal="toggleModal"
+  />
+  <header class="f ai-center j-space-between mh-auto ns">
     <button
-      class="logo-button"
+      class="f j-center logo-button"
       type="button"
       @click="handleLogoClick"
     >
@@ -65,36 +65,31 @@ const toggleModal = (): void => {
 <style scoped>
 header {
   background-color: transparent;
-  flex-wrap: wrap;
-  font-size: calc(var(--spacer) - var(--spacer-quarter));
   height: calc(var(--spacer) * 3);
-  margin: 0 auto;
-  max-width: 90vw;
-  width: 100%;
+  min-width: calc(var(--spacer) * 15);
+  width: 60vw;
 }
 .about {
   background-color: transparent;
-  border: 1px solid var(--accent);
+  border: calc(var(--spacer-quarter) / 2) solid var(--accent);
   color: var(--accent);
-  height: calc(var(--spacer) + var(--spacer-half) + var(--spacer-quarter));
+  height: calc(var(--spacer) * 2 - var(--spacer-quarter));
+  padding: 0 var(--spacer-half);
   transition: background-color var(--transition) ease-out,
     border var(--transition) ease-out,
-    box-shadow var(--transition) ease-out,
     color var(--transition) ease-out;
 }
 .about:hover {
   background-color: var(--accent-light);
-  border: 1px solid var(--accent-light);
-  box-shadow: 0 0 var(--spacer-half) var(--spacer-quarter) var(--accent-light);
+  border: calc(var(--spacer-quarter) / 2) solid var(--accent-light);
   color: var(--text-inverted);
   transition: background-color var(--transition) ease-in,
     border var(--transition) ease-in,
-    box-shadow var(--transition) ease-in,
     color var(--transition) ease-in;
 }
 .logo, .logo-button {
-  height: calc(var(--spacer) * 2);
-  width: calc(var(--spacer) * 2);
+  height: calc(var(--spacer) * 2 + var(--spacer-quarter));
+  width: calc(var(--spacer) * 2 + var(--spacer-quarter));
 }
 .logo-button {
   background-color: transparent;
@@ -105,7 +100,7 @@ header {
 }
 .logo-button:hover {
   background-color: var(--accent-light);
-  box-shadow: 0 0 var(--spacer-half) var(--spacer-quarter) var(--accent-light);
+  box-shadow: 0 0 var(--spacer) calc(var(--spacer-quarter) / 2) var(--accent-light);
   transition: background-color var(--transition) ease-in,
     box-shadow var(--transition) ease-in;
 }

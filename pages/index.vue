@@ -274,20 +274,18 @@ const handleSubmit = async (): Promise<null | void> => {
     />
     <HeaderComponent />
     <main class="f d-col ai-center j-center">
-      <div v-if="state.loading">
-        Loading...
-      </div>
+      <SpinnerComponent v-if="state.loading" />
       <DropZoneComponent
         v-if="!state.selectedImage"
         @handle-file="handleFileInput"
       />
       <DisplayImageComponent
-        v-if="state.selectedImage && !state.loading"
+        v-if="state.selectedImage"
         :image-link="state.selectedImageLink"
         @toggle-modal="togglePreviewModal"
       />
       <div
-        v-if="state.selectedImage && !state.loading"
+        v-if="state.selectedImage"
         class="f d-col mh-auto controls"
       >
         <PreviewsComponent

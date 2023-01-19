@@ -1,6 +1,6 @@
 ## filtering-frontend
 
-This is a frontend application for [Brille module](https://github.com/julyskies/brille) demo
+This is a frontend application for [Brille](https://github.com/julyskies/brille) module demo
 
 Backend application code is available at https://github.com/peterdee/filtering-backend
 
