@@ -49,7 +49,7 @@ npm run preview
 
 ### Vercel deployment
 
-This application is deployed to [Vercel](https://vercel.com)
+This application is automatically deployed to [Vercel](https://vercel.com)
 
 ### License
 

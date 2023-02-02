@@ -364,6 +364,7 @@ const handleSubmit = async (): Promise<null | void> => {
 }
 .control-button {
   height: calc(var(--spacer) * 2 - var(--spacer-quarter));
+  font-weight: 300;
 }
 .form {
   width: 100%;

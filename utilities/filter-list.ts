@@ -149,6 +149,17 @@ export default [
   {
     controlType: 'range',
     isGrayscale: false,
+    name: 'Kuwahara filter',
+    step: 1,
+    thresholdDefault: 7,
+    thresholdMax: 15,
+    thresholdMin: 2,
+    value: 'kuwahara',
+    withThreshold: true
+  },
+  {
+    controlType: 'range',
+    isGrayscale: false,
     name: 'Laplasian filter',
     step: 0,
     thresholdDefault: 0,
@@ -200,6 +211,17 @@ export default [
     thresholdMin: 0,
     value: 'sepia',
     withThreshold: false
+  },
+  {
+    controlType: 'range',
+    isGrayscale: false,
+    name: 'Sharpen filter',
+    step: 1,
+    thresholdDefault: 50,
+    thresholdMax: 100,
+    thresholdMin: 0,
+    value: 'sharpen',
+    withThreshold: true
   },
   {
     controlType: 'range',
