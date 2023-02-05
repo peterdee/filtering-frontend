@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineProps<{
+  isMobile: boolean;
+}>()
 const emit = defineEmits(['handle-file'])
 
 const handleFileDrop = (event: DragEvent): null | void => {
@@ -36,12 +39,12 @@ const handleFileSelection = (): void => {
     >Brille</a> module
   </h2>
   <button
-    class="f j-center ai-center mt-1 ns zone"
+    :class="`f j-center ai-center mh-1 mt-1 ns zone ${isMobile ? 'zone-mobile' : ''}`"
     @click="handleFileSelection"
     @dragover.prevent
     @drop.prevent="handleFileDrop"
   >
-    Drop file here or click to open
+    {{ isMobile ? 'Open file' : 'Drag & drop file or click to open' }}
   </button>
 </template>
 
@@ -60,6 +63,11 @@ const handleFileSelection = (): void => {
   transition: border var(--transition) ease-out,
     box-shadow var(--transition) ease-out;
   width: 60vw;
+}
+.zone-mobile {
+  height: 20%;
+  min-height: calc(var(--spacer) * 10);
+  width: 90%;
 }
 .zone:hover {
   border: calc(var(--spacer-quarter) / 2) dotted var(--accent-light);

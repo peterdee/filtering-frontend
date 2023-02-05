@@ -6,6 +6,10 @@ interface ComponentState {
   title: string;
 }
 
+defineProps<{
+  isMobile: boolean;
+}>()
+
 const state = reactive<ComponentState>({
   statusClassName: 'loading',
   title: 'Loading...'
@@ -28,7 +32,9 @@ onMounted((): void => {
 </script>
 
 <template>
-  <footer class="f ai-center j-center ns">
+  <footer
+    :class="`f ai-center j-center ns ${isMobile ? 'mobile' : ''}`"
+  >
     <span class="ml-half mr-1">
       {{ `© ${year}` }}
     </span>
@@ -36,6 +42,7 @@ onMounted((): void => {
       <a
         href="https://github.com/julyskies/brille"
         target="_blank"
+        :class="`${isMobile ? 'mobile' : ''}`"
       >
         Brille image processing
       </a>
@@ -44,6 +51,7 @@ onMounted((): void => {
       <a
         href="https://github.com/peterdee"
         target="_blank"
+        :class="`${isMobile ? 'mobile' : ''}`"
       >
         Peter Dyumin
       </a>
@@ -66,6 +74,9 @@ footer {
   font-size: calc(var(--spacer) - var(--spacer-quarter));
   height: calc(var(--spacer) * 3);
   width: 100%;
+}
+.mobile {
+  font-size: calc(var(--spacer-half) + var(--spacer-quarter) / 2);
 }
 .error {
   background-color: var(--error);

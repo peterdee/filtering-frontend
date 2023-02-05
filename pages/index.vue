@@ -4,11 +4,13 @@ import 'common-styles/styles.css'
 
 import filters, { type Filter } from '../utilities/filter-list'
 import formatSize from '../utilities/format-size'
+import isMobile from '../utilities/is-mobile'
 import type { StoredImage } from '../types'
 
 interface ComponentState {
   errorMessage: string;
   grayscaleType: string;
+  isMobile: boolean;
   loading: boolean;
   originalImageDimensions: {
     height: number;
@@ -28,6 +30,7 @@ interface ComponentState {
 const state = reactive<ComponentState>({
   errorMessage: '',
   grayscaleType: 'average',
+  isMobile: false,
   loading: false,
   originalImageDimensions: {
     height: 0,
@@ -248,10 +251,17 @@ const handleSubmit = async (): Promise<null | void> => {
     state.loading = false
   } catch (error) {
     state.loading = false
+
+    // TODO: show image size error
+
     state.errorMessage = 'Something went wrong...'
     return toggleErrorModal()
   }
 }
+
+onMounted((): void => {
+  state.isMobile = isMobile()
+})
 </script>
 
 <template>
@@ -272,11 +282,12 @@ const handleSubmit = async (): Promise<null | void> => {
       :message="state.errorMessage"
       @toggle-modal="toggleErrorModal"
     />
-    <HeaderComponent />
+    <HeaderComponent :is-mobile="state.isMobile" />
     <main class="f d-col ai-center j-center">
       <SpinnerComponent v-if="state.loading" />
       <DropZoneComponent
         v-if="!state.selectedImage"
+        :is-mobile="state.isMobile"
         @handle-file="handleFileInput"
       />
       <DisplayImageComponent
@@ -352,7 +363,7 @@ const handleSubmit = async (): Promise<null | void> => {
         </button>
       </div>
     </main>
-    <FooterComponent />
+    <FooterComponent :is-mobile="state.isMobile" />
   </div>
 </template>
 

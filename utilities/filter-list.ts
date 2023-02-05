@@ -160,7 +160,7 @@ export default [
   {
     controlType: 'range',
     isGrayscale: false,
-    name: 'Laplasian filter',
+    name: 'Laplacian filter',
     step: 0,
     thresholdDefault: 0,
     thresholdMax: 0,

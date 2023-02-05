@@ -4,6 +4,10 @@ interface ComponentState {
   showModal: boolean;
 }
 
+defineProps<{
+  isMobile: boolean;
+}>()
+
 const state = reactive<ComponentState>({
   favicon: 'favicon-dark.png',
   showModal: false
@@ -40,7 +44,9 @@ const toggleModal = (): void => {
     v-if="state.showModal"
     @toggle-modal="toggleModal"
   />
-  <header class="f ai-center j-space-between mh-auto ns">
+  <header
+    :class="`f ai-center j-space-between mh-auto ns ${isMobile ? 'mobile' : ''}`"
+  >
     <button
       class="f j-center logo-button"
       type="button"
@@ -68,6 +74,9 @@ header {
   height: calc(var(--spacer) * 3);
   min-width: calc(var(--spacer) * 15);
   width: 60vw;
+}
+.mobile {
+  width: 90%;
 }
 .about {
   background-color: transparent;

@@ -26,7 +26,7 @@ useClickOutside<HTMLDivElement>(
           About
         </h2>
         <button
-          class="close-button"
+          class="mr-half close-button"
           type="button"
           @click="emit('toggle-modal')"
         >
