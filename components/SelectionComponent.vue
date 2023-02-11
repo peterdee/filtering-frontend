@@ -37,12 +37,31 @@ const handler = (event: Event): void => emit('handle-select', event)
         {{ option.name }}
       </option>
     </template>
+    <template v-if="props.selectType === 'flip'">
+      <option value="horizontal">
+        Horizontal
+      </option>
+      <option value="vertical">
+        Vertical
+      </option>
+    </template>
     <template v-if="props.selectType === 'grayscale'">
       <option value="average">
         Average
       </option>
       <option value="luminocity">
         Luminocity
+      </option>
+    </template>
+    <template v-if="props.selectType === 'rotate'">
+      <option value="90">
+        90 degrees
+      </option>
+      <option value="180">
+        180 degrees
+      </option>
+      <option value="270">
+        270 degrees
       </option>
     </template>
   </SelectElement>
