@@ -49,8 +49,8 @@ const handler = (event: Event): void => emit('handle-select', event)
       <option value="average">
         Average
       </option>
-      <option value="luminocity">
-        Luminocity
+      <option value="luminance">
+        Luminance
       </option>
     </template>
     <template v-if="props.selectType === 'rotate'">
