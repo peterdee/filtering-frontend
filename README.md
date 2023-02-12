@@ -8,7 +8,7 @@ Backend application code is available at https://github.com/peterdee/filtering-b
 
 **DEV**: http://localhost:3000
 
-**PRODUCTION**: https://images.dyum.in
+**PRODUCTION**: https://images.dyum.in (https://filtering-frontend.vercel.app)
 
 ### Deploy
 
