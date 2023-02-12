@@ -9,6 +9,7 @@ import type { StoredImage } from '../types'
 
 interface ComponentState {
   errorMessage: string;
+  flipDirection: string;
   grayscaleType: string;
   isMobile: boolean;
   loading: boolean;
@@ -16,6 +17,7 @@ interface ComponentState {
     height: number;
     width: number;
   };
+  rotationAngle: number;
   selectedFilter: Filter;
   selectedImage: File | null;
   selectedImageId: number | null;
@@ -29,6 +31,7 @@ interface ComponentState {
 
 const state = reactive<ComponentState>({
   errorMessage: '',
+  flipDirection: 'horizontal',
   grayscaleType: 'average',
   isMobile: false,
   loading: false,
@@ -36,6 +39,7 @@ const state = reactive<ComponentState>({
     height: 0,
     width: 0
   },
+  rotationAngle: 90,
   selectedFilter: filters[0],
   selectedImage: null,
   selectedImageId: null,
@@ -155,6 +159,11 @@ const handleFileInput = async (file: File): Promise<null | void> => {
   })
 }
 
+const handleFlipSelection = (event: Event): void => {
+  const { value } = event.target as HTMLSelectElement
+  state.flipDirection = value
+}
+
 const handleGrayscaleSelection = (event: Event): void => {
   const { value } = event.target as HTMLSelectElement
   state.grayscaleType = value
@@ -175,6 +184,11 @@ const handlePreviewClick = (id: number): null | void => {
 const handleRangeInput = (event: Event): void => {
   const { value } = event.target as HTMLSelectElement
   state.thresholdValue = Number(value)
+}
+
+const handleRotateSelection = (event: Event): void => {
+  const { value } = event.target as HTMLSelectElement
+  state.rotationAngle = Number(value)
 }
 
 const handleSelectFilter = (event: Event): void => {
@@ -199,10 +213,12 @@ const togglePreviewModal = (): void => {
 
 const handleSubmit = async (): Promise<null | void> => {
   const {
+    flipDirection,
     grayscaleType,
     selectedFilter,
     selectedImage,
     selectedImageName,
+    rotationAngle,
     thresholdValue
   } = state
   if (!(selectedFilter && selectedImage)) {
@@ -218,9 +234,17 @@ const handleSubmit = async (): Promise<null | void> => {
 
   let appliedFilter = selectedFilter.name
 
+  if (selectedFilter.value === 'flip') {
+    appliedFilter += ` (${flipDirection})`
+    formData.append('flipDirection', flipDirection)
+  }
   if (selectedFilter.value === 'grayscale') {
     appliedFilter += ` (${grayscaleType})`
     formData.append('grayscaleType', grayscaleType)
+  }
+  if (selectedFilter.value === 'rotateFixed') {
+    appliedFilter += ` (${rotationAngle} degrees)`
+    formData.append('threshold', `${rotationAngle}`)
   }
   if (selectedFilter.withThreshold) {
     appliedFilter += ` (${thresholdValue})`
@@ -251,9 +275,6 @@ const handleSubmit = async (): Promise<null | void> => {
     state.loading = false
   } catch (error) {
     state.loading = false
-
-    // TODO: show image size error
-
     state.errorMessage = 'Something went wrong...'
     return toggleErrorModal()
   }
@@ -321,11 +342,25 @@ onMounted((): void => {
           />
           <div class="f d-col additional-options">
             <SelectionComponent
+              v-if="state.selectedFilter && state.selectedFilter.value === 'flip'"
+              :global-classes="'mt-half ns'"
+              :select-type="'flip'"
+              :value="state.flipDirection"
+              @handle-select="handleFlipSelection"
+            />
+            <SelectionComponent
               v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
               :global-classes="'mt-half ns'"
               :select-type="'grayscale'"
               :value="state.grayscaleType"
               @handle-select="handleGrayscaleSelection"
+            />
+            <SelectionComponent
+              v-if="state.selectedFilter && state.selectedFilter.value === 'rotateFixed'"
+              :global-classes="'mt-half ns'"
+              :select-type="'rotate'"
+              :value="`${state.rotationAngle}`"
+              @handle-select="handleRotateSelection"
             />
             <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
               <RangeComponent
@@ -381,7 +416,7 @@ onMounted((): void => {
   width: 100%;
 }
 .additional-options {
-  height: calc(var(--spacer) * 3);
+  height: calc(var(--spacer) * 4);
 }
 .wrap {
   min-height: 100vh;

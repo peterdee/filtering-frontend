@@ -14,7 +14,10 @@ const handle = (event: Event): void => emit('handle-input', event)
 
 <template>
   <div :class="`f d-col ${globalClasses || ''}`">
-    <div class="f j-space-between ai-center">
+    <div class="t-center ns text">
+      {{ selectedFilter.thresholdDescription || '' }}
+    </div>
+    <div class="f j-space-between mt-quarter ai-center">
       <span class="f j-start mr-half ns text values">
         {{ selectedFilter.thresholdMin }}
       </span>
