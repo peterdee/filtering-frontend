@@ -1,7 +1,7 @@
 <template>
   <div class="f d-col j-center ns modal-background">
     <div class="modal-tint" />
-    <div class="spinner" />
+    <div class="mh-auto spinner" />
   </div>
 </template>
 
@@ -9,39 +9,38 @@
 .modal-background, .modal-tint {
   backdrop-filter: blur(var(--spacer-quarter));
   background-color: transparent;
-  height: 100vh;
+  height: 100%;
   left: 0;
   position: fixed;
   top: 0;
-  width: 100vw;
+  width: 100%;
 }
 .modal-tint {
   background-color: var(--text);
   opacity: .5;
 }
-@-webkit-keyframes sk-rotateplane {
-  0% { -webkit-transform: perspective(120px) }
-  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
-  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
-}
-@keyframes sk-rotateplane {
+@keyframes ring {
   0% {
-    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
-  } 50% {
-    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
-  } 100% {
-    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 .spinner {
-  animation: sk-rotateplane 1.2s infinite ease-in-out;
-  -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
-  background-color: var(--background);
+  display: inline-block;
+  height: calc(var(--spacer) * 5);
+  width: calc(var(--spacer) * 5);
+}
+.spinner:after {
+  animation: ring 1.2s linear infinite;
+  border: 6px solid var(--background);
+  border-color: var(--background) transparent var(--background) transparent;
+  border-radius: 50%;
+  content: " ";
+  display: block;
   height: calc(var(--spacer) * 4);
-  margin: 100px auto;
+  margin: var(--spacer-half);
   width: calc(var(--spacer) * 4);
 }
 </style>

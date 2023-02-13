@@ -12,6 +12,7 @@ defineProps<{
   };
   imageLink: string;
   imageSize: number;
+  isMobile: boolean;
 }>()
 
 const emit = defineEmits([
@@ -36,7 +37,7 @@ useClickOutside<HTMLDivElement>(
       ref="componentRef"
       class="flex j-center ai-center mh-auto image-wrap"
     >
-      <div class="f d-col ns info">
+      <div :class="`f d-col ns info ${isMobile ? 'info-mobile' : ''}`">
         <div class="info-text">
           {{ `File size: ${formatSize(imageSize)}` }}
         </div>
@@ -50,7 +51,7 @@ useClickOutside<HTMLDivElement>(
           {{ `Last applied filter: ${appliedFilter}` }}
         </div>
       </div>
-      <div class="f j-end controls">
+      <div :class="`f j-end controls ${isMobile ? 'controls-mobile' : ''}`">
         <button
           class="control-button"
           title="Download"
@@ -87,11 +88,11 @@ useClickOutside<HTMLDivElement>(
 .modal-background, .modal-tint {
   backdrop-filter: blur(var(--spacer-quarter));
   background-color: transparent;
-  height: 100vh;
+  height: 100%;
   left: 0;
   position: fixed;
   top: 0;
-  width: 100vw;
+  width: 100%;
 }
 .modal-tint {
   background-color: var(--text);
@@ -117,6 +118,9 @@ useClickOutside<HTMLDivElement>(
 .controls {
   right: calc(var(--spacer) * 3);
 }
+.controls-mobile {
+  right: var(--spacer-half);
+}
 .info {
   background-color: transparent;
   border-radius: var(--spacer);
@@ -124,6 +128,9 @@ useClickOutside<HTMLDivElement>(
   opacity: .5;
   padding: var(--spacer);
   transition: background-color var(--transition) ease-out, opacity var(--transition) ease-out;
+}
+.info-mobile {
+  left: var(--spacer-half);
 }
 .info-text {
   font-size: calc(var(--spacer) - var(--spacer-quarter));

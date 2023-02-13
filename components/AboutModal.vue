@@ -33,19 +33,19 @@ useClickOutside<HTMLDivElement>(
           <CloseIcon :size="16" />
         </button>
       </div>
-      <div class="mt-1 text">
+      <div class="p-half text">
         This application is a demo for <a
           href="https://github.com/julyskies/brille"
           target="_blank"
         >Brille</a> image processing module
       </div>
-      <div class="mt-half text">
+      <div class="p-half text">
         Frontend application repository: <a
           href="https://github.com/peterdee/filtering-frontend"
           target="_blank"
         >https://github.com/peterdee/filtering-frontend</a>
       </div>
-      <div class="mt-half text">
+      <div class="p-half text">
         Backend application repository: <a
           href="https://github.com/peterdee/filtering-backend"
           target="_blank"
@@ -65,11 +65,11 @@ useClickOutside<HTMLDivElement>(
 .modal-background, .modal-tint {
   backdrop-filter: blur(var(--spacer-quarter));
   background-color: transparent;
-  height: 100vh;
+  height: 100%;
   left: 0;
   position: fixed;
   top: 0;
-  width: 100vw;
+  width: 100%;
 }
 .modal-tint {
   background-color: var(--text);

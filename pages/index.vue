@@ -286,7 +286,9 @@ onMounted((): void => {
 </script>
 
 <template>
-  <div class="f d-col j-space-between wrap">
+  <div
+    :class="`f d-col j-space-between wrap ${state.isMobile ? 'wrap-mobile' : ''}`"
+  >
     <PreviewModal
       v-if="state.showPreviewModal"
       :applied-filter="state.storedImages.filter((
@@ -295,6 +297,7 @@ onMounted((): void => {
       :image-dimensions="state.originalImageDimensions"
       :image-link="state.selectedImageLink"
       :image-size="state.selectedImage?.size || 0"
+      :is-mobile="state.isMobile"
       @handle-download="handleDownloadImage"
       @toggle-modal="togglePreviewModal"
     />
@@ -421,5 +424,8 @@ onMounted((): void => {
 .wrap {
   min-height: 100vh;
   width: 100%;
+}
+.wrap-mobile {
+  min-height: 80vh;
 }
 </style>
