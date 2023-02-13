@@ -36,8 +36,33 @@ const toggleModal = (): void => {
       type="image/x-icon"
       :href="state.favicon"
     />
+    <Meta charset="UTF-8" />
+    <Meta
+      content="width=device-width, initial-scale=1.0"
+      name="viewport"
+    />
+    <Meta
+      content="https://images.dyum.in"
+      property="og:url"
+    />
+    <Meta
+      content="Images: a demo for Brille module | dyum.in"
+      property="og:title"
+    />
+    <Meta
+      content="This application demonstrates capabilities of Brille image processing module"
+      property="og:description"
+    />
+    <Meta
+      content="/favicon-dark.png"
+      property="og:image"
+    />
+    <Meta
+      content="/favicon-dark.png"
+      property="twitter:image"
+    />
     <Title>
-      Images | dyum.in
+      Images: a demo for Brille module | dyum.in
     </Title>
   </Head>
   <AboutModal
