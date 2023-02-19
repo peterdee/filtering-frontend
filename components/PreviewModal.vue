@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue'
+import {
+  reactive,
+  ref,
+  type Ref
+} from 'vue'
 
 import formatSize from '../utilities/format-size'
 import useClickOutside from '../utilities/use-click-outside'
+
+interface ComponentState {
+  isClosing: boolean;
+}
 
 defineProps<{
   appliedFilter: string;
@@ -20,17 +28,28 @@ const emit = defineEmits([
   'toggle-modal'
 ])
 
+const state = reactive<ComponentState>({
+  isClosing: false
+})
+
 const componentRef = ref<HTMLDivElement | null>(null)
+
+const handleClose = (): void => {
+  state.isClosing = true
+  setTimeout((): void => emit('toggle-modal'), 150)
+}
 
 useClickOutside<HTMLDivElement>(
   componentRef as Ref<HTMLDivElement>,
-  (): void => emit('toggle-modal')
+  (): void => handleClose()
 )
 </script>
 
 <template>
   <div
-    class="f d-col j-center ns modal-background"
+    :class="`f d-col j-center ns fade-in modal-background ${state.isClosing
+      ? 'fade-out'
+      : ''}`"
   >
     <div class="modal-tint" />
     <div
@@ -67,7 +86,7 @@ useClickOutside<HTMLDivElement>(
           class="f j-center ai-center ml-1 control-button"
           title="Close"
           type="button"
-          @click="emit('toggle-modal')"
+          @click="handleClose"
         >
           <CloseIcon
             :color="'black'"
@@ -104,7 +123,7 @@ useClickOutside<HTMLDivElement>(
   min-width: calc(var(--spacer) * 15);
 }
 .image {
-  box-shadow: 0 0 var(--spacer) var(--spacer-quarter) var(--text);
+  box-shadow: 0 0 calc(var(--spacer) * 5) 0 var(--background);
 }
 .image-wrap {
   min-height: calc(var(--spacer) * 25);
