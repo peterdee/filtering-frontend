@@ -1,20 +1,41 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue'
+import {
+  reactive,
+  ref,
+  type Ref
+} from 'vue'
 
 import useClickOutside from '../utilities/use-click-outside'
 
+interface ComponentState {
+  isClosing: boolean;
+}
+
 const emit = defineEmits(['toggle-modal'])
+
+const state = reactive<ComponentState>({
+  isClosing: false
+})
 
 const componentRef = ref<HTMLDivElement | null>(null)
 
+const handleClose = (): void => {
+  state.isClosing = true
+  setTimeout((): void => emit('toggle-modal'), 150)
+}
+
 useClickOutside<HTMLDivElement>(
   componentRef as Ref<HTMLDivElement>,
-  (): void => emit('toggle-modal')
+  (): void => handleClose()
 )
 </script>
 
 <template>
-  <div class="f d-col j-center ns modal-background">
+  <div
+    :class="`f d-col j-center ns fade-in modal-background ${state.isClosing
+      ? 'fade-out'
+      : ''}`"
+  >
     <div class="modal-tint" />
     <div
       ref="componentRef"
@@ -28,7 +49,7 @@ useClickOutside<HTMLDivElement>(
         <button
           class="mr-half close-button"
           type="button"
-          @click="emit('toggle-modal')"
+          @click="handleClose"
         >
           <CloseIcon :size="16" />
         </button>
@@ -52,10 +73,10 @@ useClickOutside<HTMLDivElement>(
         >https://github.com/peterdee/filtering-backend</a>
       </div>
       <div class="mt-1 t-center text">
-        <a
+        © {{ new Date().getFullYear() }}, <a
           href="https://dyum.in"
           target="_blank"
-        >Peter Dyumin</a>, © {{ new Date().getFullYear() }}
+        >Peter Dyumin</a>
       </div>
     </div>
   </div>
@@ -78,6 +99,7 @@ useClickOutside<HTMLDivElement>(
 .content {
   background-color: var(--background);
   border-radius: var(--spacer);
+  box-shadow: 0 0 calc(var(--spacer) * 5) 0 var(--background);
   max-width: calc(var(--spacer) * 30);
   min-width: calc(var(--spacer) * 20);
   padding: var(--spacer);
