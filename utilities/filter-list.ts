@@ -138,6 +138,20 @@ export default [
     withThreshold: true
   },
   {
+    controlType: 'input',
+    inputPlaceholder: 'Blur strength',
+    isFlip: false,
+    isGrayscale: false,
+    isRotateFixed: false,
+    name: 'Gaussian blur',
+    step: 0.1,
+    thresholdDefault: 5,
+    thresholdMax: 50,
+    thresholdMin: 0,
+    value: 'gaussianBlur',
+    withThreshold: true
+  },
+  {
     controlType: 'range',
     isFlip: false,
     isGrayscale: true,
