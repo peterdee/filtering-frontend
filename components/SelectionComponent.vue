@@ -55,13 +55,13 @@ const handler = (event: Event): void => emit('handle-select', event)
     </template>
     <template v-if="props.selectType === 'rotate'">
       <option value="90">
-        90 degrees
+        90 degrees clockwise
       </option>
       <option value="180">
-        180 degrees
+        180 degrees clockwise
       </option>
       <option value="270">
-        270 degrees
+        270 degrees clockwise
       </option>
     </template>
   </SelectElement>

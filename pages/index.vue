@@ -12,6 +12,7 @@ interface ComponentState {
   flipDirection: string;
   grayscaleType: string;
   isMobile: boolean;
+  isServerConnected: boolean;
   loading: boolean;
   originalImageDimensions: {
     height: number;
@@ -34,6 +35,7 @@ const state = reactive<ComponentState>({
   flipDirection: 'horizontal',
   grayscaleType: 'average',
   isMobile: false,
+  isServerConnected: false,
   loading: false,
   originalImageDimensions: {
     height: 0,
@@ -282,6 +284,17 @@ const handleSubmit = async (): Promise<null | void> => {
 
 onMounted((): void => {
   state.isMobile = isMobile()
+
+  axios({
+    method: 'GET',
+    url: useRuntimeConfig().public.BACKEND_URL
+  }).then((): void => {
+    state.isServerConnected = true
+  }).catch((): void => {
+    state.errorMessage = 'Server is not responding!'
+    state.isServerConnected = true
+    return toggleErrorModal()
+  })
 })
 </script>
 
@@ -308,98 +321,105 @@ onMounted((): void => {
     />
     <HeaderComponent :is-mobile="state.isMobile" />
     <main class="f d-col ai-center j-center">
-      <SpinnerComponent v-if="state.loading" />
-      <DropZoneComponent
-        v-if="!state.selectedImage"
-        :is-mobile="state.isMobile"
-        @handle-file="handleFileInput"
+      <SpinnerComponent
+        v-if="!state.isServerConnected"
+        :hide-tint="true"
+        :inverted="true"
       />
-      <DisplayImageComponent
-        v-if="state.selectedImage"
-        :image-link="state.selectedImageLink"
-        @toggle-modal="togglePreviewModal"
-      />
-      <div
-        v-if="state.selectedImage"
-        class="f d-col mh-auto controls"
-      >
-        <PreviewsComponent
-          :images="state.storedImages"
-          :selected-image-id="Number(state.selectedImageId)"
-          @handle-click="handlePreviewClick"
+      <template v-if="state.isServerConnected">
+        <SpinnerComponent v-if="state.loading" />
+        <DropZoneComponent
+          v-if="!state.selectedImage"
+          :is-mobile="state.isMobile"
+          @handle-file="handleFileInput"
         />
-        <ImageControlsComponent
-          @handle-delete-image="handleDeleteImage"
-          @handle-download-image="handleDownloadImage"
+        <DisplayImageComponent
+          v-if="state.selectedImage"
+          :image-link="state.selectedImageLink"
           @toggle-modal="togglePreviewModal"
         />
-        <form
-          class="f d-col form"
-          @submit.prevent="handleSubmit"
+        <div
+          v-if="state.selectedImage"
+          class="f d-col mh-auto controls"
         >
-          <SelectionComponent
-            :global-classes="'ns'"
-            :select-type="'filter'"
-            :value="state.selectedFilter.value"
-            @handle-select="handleSelectFilter"
+          <PreviewsComponent
+            :images="state.storedImages"
+            :selected-image-id="Number(state.selectedImageId)"
+            @handle-click="handlePreviewClick"
           />
-          <div class="f d-col additional-options">
+          <ImageControlsComponent
+            @handle-delete-image="handleDeleteImage"
+            @handle-download-image="handleDownloadImage"
+            @toggle-modal="togglePreviewModal"
+          />
+          <form
+            class="f d-col form"
+            @submit.prevent="handleSubmit"
+          >
             <SelectionComponent
-              v-if="state.selectedFilter && state.selectedFilter.value === 'flip'"
-              :global-classes="'mt-half ns'"
-              :select-type="'flip'"
-              :value="state.flipDirection"
-              @handle-select="handleFlipSelection"
+              :global-classes="'ns'"
+              :select-type="'filter'"
+              :value="state.selectedFilter.value"
+              @handle-select="handleSelectFilter"
             />
-            <SelectionComponent
-              v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
-              :global-classes="'mt-half ns'"
-              :select-type="'grayscale'"
-              :value="state.grayscaleType"
-              @handle-select="handleGrayscaleSelection"
-            />
-            <SelectionComponent
-              v-if="state.selectedFilter && state.selectedFilter.value === 'rotateFixed'"
-              :global-classes="'mt-half ns'"
-              :select-type="'rotate'"
-              :value="`${state.rotationAngle}`"
-              @handle-select="handleRotateSelection"
-            />
-            <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
-              <RangeComponent
-                v-if="state.selectedFilter.controlType === 'range'"
-                :global-classes="'mt-half'"
-                :selected-filter="state.selectedFilter"
-                :threshold-value="state.thresholdValue"
-                @handle-input="handleRangeInput"
+            <div class="f d-col additional-options">
+              <SelectionComponent
+                v-if="state.selectedFilter && state.selectedFilter.value === 'flip'"
+                :global-classes="'mt-half ns'"
+                :select-type="'flip'"
+                :value="state.flipDirection"
+                @handle-select="handleFlipSelection"
               />
-              <InputElement
-                v-if="state.selectedFilter.controlType === 'input'"
-                name="threshold"
-                type="number"
-                :global-classes="'mt-half'"
-                :min="state.selectedFilter.thresholdMin"
-                :placeholder="state.selectedFilter.inputPlaceholder"
-                :value="state.thresholdValue"
-                @handle-input="handleThresholdInput"
+              <SelectionComponent
+                v-if="state.selectedFilter && state.selectedFilter.value === 'grayscale'"
+                :global-classes="'mt-half ns'"
+                :select-type="'grayscale'"
+                :value="state.grayscaleType"
+                @handle-select="handleGrayscaleSelection"
               />
+              <SelectionComponent
+                v-if="state.selectedFilter && state.selectedFilter.value === 'rotateFixed'"
+                :global-classes="'mt-half ns'"
+                :select-type="'rotate'"
+                :value="`${state.rotationAngle}`"
+                @handle-select="handleRotateSelection"
+              />
+              <div v-if="state.selectedFilter && state.selectedFilter.withThreshold">
+                <RangeComponent
+                  v-if="state.selectedFilter.controlType === 'range'"
+                  :global-classes="'mt-half'"
+                  :selected-filter="state.selectedFilter"
+                  :threshold-value="state.thresholdValue"
+                  @handle-input="handleRangeInput"
+                />
+                <InputElement
+                  v-if="state.selectedFilter.controlType === 'input'"
+                  name="threshold"
+                  type="number"
+                  :global-classes="'mt-half'"
+                  :min="state.selectedFilter.thresholdMin"
+                  :placeholder="state.selectedFilter.inputPlaceholder"
+                  :value="state.thresholdValue"
+                  @handle-input="handleThresholdInput"
+                />
+              </div>
             </div>
-          </div>
+            <button
+              class="mt-half control-button"
+              type="submit"
+            >
+              Apply filter
+            </button>
+          </form>
           <button
             class="mt-half control-button"
-            type="submit"
+            type="button"
+            @click="handleClear"
           >
-            Apply filter
+            Clear
           </button>
-        </form>
-        <button
-          class="mt-half control-button"
-          type="button"
-          @click="handleClear"
-        >
-          Clear
-        </button>
-      </div>
+        </div>
+      </template>
     </main>
     <FooterComponent :is-mobile="state.isMobile" />
   </div>

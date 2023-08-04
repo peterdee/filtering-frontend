@@ -57,7 +57,7 @@ onMounted((): void => {
       </a>
     </span>
     <span>
-      Backend status:
+      Backend status
     </span>
     <span class="mh-half">
       <div
