@@ -1,7 +1,17 @@
+<script setup lang="ts">
+defineProps<{
+  hideTint?: boolean;
+  inverted: boolean;
+}>()
+</script>
+
 <template>
   <div class="f d-col j-center ns modal-background">
-    <div class="modal-tint" />
-    <div class="mh-auto spinner" />
+    <div
+      v-if="!hideTint"
+      class="modal-tint"
+    />
+    <div :class="`mh-auto spinner ${inverted ? 'inverted' : ''}`" />
   </div>
 </template>
 
@@ -42,5 +52,9 @@
   height: calc(var(--spacer) * 4);
   margin: var(--spacer-half);
   width: calc(var(--spacer) * 4);
+}
+.inverted:after {
+  border: 6px solid var(--accent);
+  border-color: var(--accent) transparent var(--accent) transparent;
 }
 </style>
